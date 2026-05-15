@@ -233,6 +233,49 @@ ${DESTINO}`
 })
 
 // ======================================
+// QUITAR ORIGEN
+// ======================================
+
+bot.onText(/\/quitarorigen (.+)/,
+
+(msg, match) => {
+
+    const id = match[1]
+
+    ORIGENES =
+    ORIGENES.filter(
+        x => x !== id
+    )
+
+    bot.sendMessage(
+
+        msg.chat.id,
+
+`❌ ORIGEN ELIMINADO
+
+${id}`
+    )
+})
+
+// ======================================
+// QUITAR DESTINO
+// ======================================
+
+bot.onText(/\/quitardestino/,
+
+(msg) => {
+
+    DESTINO = ''
+
+    bot.sendMessage(
+
+        msg.chat.id,
+
+'❌ DESTINO ELIMINADO'
+    )
+})
+
+// ======================================
 // CONFIG
 // ======================================
 
