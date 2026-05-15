@@ -13,10 +13,10 @@ require('node-telegram-bot-api')
 // ======================================
 
 const TOKEN =
-'8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
+process.env.TOKEN || '8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
 
 // ======================================
-// TU CHAT ID
+// ADMINS TELEGRAM
 // ======================================
 
 const ADMINS = [
@@ -24,6 +24,7 @@ const ADMINS = [
     5766404349,
     8558292983
 ]
+
 // ======================================
 // VARIABLES
 // ======================================
@@ -33,9 +34,7 @@ let ORIGENES = []
 let DESTINO = ''
 
 const mensajesPendientes = {}
-if (publicaciones[id]) return
 
-publicaciones[id] = true
 const publicaciones = {}
 
 // ======================================
@@ -68,6 +67,9 @@ const client = new Client({
     puppeteer: {
 
         headless: true,
+
+        executablePath:
+        process.env.PUPPETEER_EXECUTABLE_PATH,
 
         args: [
 
@@ -142,7 +144,10 @@ Eliminar origen
 Eliminar destino
 
 /config
-Ver configuración`
+Ver configuración
+
+/test
+Probar destino`
     )
 })
 
@@ -200,6 +205,18 @@ ${estado}`
 bot.onText(/\/origen (.+)/, (msg, match) => {
 
     const id = match[1]
+
+    if (
+        ORIGENES.includes(id)
+    ) {
+
+        return bot.sendMessage(
+
+            msg.chat.id,
+
+            '⚠️ ESE ORIGEN YA EXISTE'
+        )
+    }
 
     ORIGENES.push(id)
 
@@ -335,7 +352,7 @@ SI VES ESTO FUNCIONA`
 // MENSAJES
 // ======================================
 
-client.on('message_create', async (msg) => {
+client.on('message', async (msg) => {
 
     try {
 
@@ -397,10 +414,12 @@ client.on('message_create', async (msg) => {
             }
         }
 
-        // ENVIAR A TELEGRAM
-        await bot.sendMessage(
+        // ENVIAR A TODOS LOS ADMINS
+        for (const admin of ADMINS) {
 
-            ADMINS,
+            await bot.sendMessage(
+
+                admin,
 
 `📰 NUEVA NOTICIA
 
@@ -410,8 +429,9 @@ ${texto}
 
 ¿PUBLICAR?`,
 
-            opciones
-        )
+                opciones
+            )
+        }
 
         console.log(
 '📨 ENVIADO A TELEGRAM'
@@ -451,6 +471,24 @@ async (query) => {
                 'publicar_',
                 ''
             )
+
+            // EVITAR DUPLICADOS
+            if (
+                publicaciones[id]
+            ) {
+
+                return bot.answerCallbackQuery(
+
+                    query.id,
+
+                    {
+                        text:
+                        '⚠️ YA FUE PUBLICADO'
+                    }
+                )
+            }
+
+            publicaciones[id] = true
 
             const texto =
             mensajesPendientes[id]
