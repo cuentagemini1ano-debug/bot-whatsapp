@@ -109,15 +109,6 @@ client.on('ready', () => {
 })
 
 // ======================================
-// DESCONECTADO
-// ======================================
-
-client.on('disconnected', () => {
-
-    console.log('\n🔴 WHATSAPP DESCONECTADO\n')
-})
-
-// ======================================
 // START
 // ======================================
 
@@ -131,29 +122,12 @@ bot.onText(/\/start/, (msg) => {
 
 COMANDOS:
 
-/estado
-Estado WhatsApp
-
 /id
-Tu ID Telegram
-
+/estado
 /origen ID
-Agregar origen
-
 /destino ID
-Configurar destino
-
-/quitarorigen ID
-Eliminar origen
-
-/quitardestino
-Eliminar destino
-
 /config
-Ver configuración
-
-/test
-Probar destino`
+/test`
     )
 })
 
@@ -167,7 +141,7 @@ bot.onText(/\/id/, (msg) => {
 
         msg.chat.id,
 
-`🆔 TU ID:
+`🆔 ID:
 
 ${msg.chat.id}`
     )
@@ -199,13 +173,13 @@ ${estado}`
 
             msg.chat.id,
 
-            '🔴 WHATSAPP DESCONECTADO'
+            '🔴 DESCONECTADO'
         )
     }
 })
 
 // ======================================
-// AGREGAR ORIGEN
+// ORIGEN
 // ======================================
 
 bot.onText(/\/origen (.+)/,
@@ -214,25 +188,13 @@ bot.onText(/\/origen (.+)/,
 
     const id = match[1]
 
-    if (
-        ORIGENES.includes(id)
-    ) {
-
-        return bot.sendMessage(
-
-            msg.chat.id,
-
-            '⚠️ ESE ORIGEN YA EXISTE'
-        )
-    }
-
     ORIGENES.push(id)
 
     bot.sendMessage(
 
         msg.chat.id,
 
-`✅ ORIGEN AGREGADO
+`✅ ORIGEN:
 
 ${id}`
     )
@@ -252,52 +214,9 @@ bot.onText(/\/destino (.+)/,
 
         msg.chat.id,
 
-`✅ DESTINO CONFIGURADO
+`✅ DESTINO:
 
 ${DESTINO}`
-    )
-})
-
-// ======================================
-// QUITAR ORIGEN
-// ======================================
-
-bot.onText(/\/quitarorigen (.+)/,
-
-(msg, match) => {
-
-    const id = match[1]
-
-    ORIGENES =
-    ORIGENES.filter(
-        x => x !== id
-    )
-
-    bot.sendMessage(
-
-        msg.chat.id,
-
-`❌ ORIGEN ELIMINADO
-
-${id}`
-    )
-})
-
-// ======================================
-// QUITAR DESTINO
-// ======================================
-
-bot.onText(/\/quitardestino/,
-
-(msg) => {
-
-    DESTINO = ''
-
-    bot.sendMessage(
-
-        msg.chat.id,
-
-'❌ DESTINO ELIMINADO'
     )
 })
 
@@ -313,17 +232,17 @@ bot.onText(/\/config/,
 
         msg.chat.id,
 
-`⚙️ CONFIGURACIÓN
+`⚙️ CONFIG
 
 📥 ORÍGENES:
 
-${ORIGENES.join('\n') || 'NINGUNO'}
+${ORIGENES.join('\n')}
 
 ━━━━━━━━━━━━━━━
 
 📤 DESTINO:
 
-${DESTINO || 'NO CONFIGURADO'}`
+${DESTINO}`
     )
 })
 
@@ -341,27 +260,25 @@ async (msg) => {
 
             DESTINO,
 
-`🧪 TEST DESTINO
+`🧪 TEST
 
-SI VES ESTO FUNCIONA`
+FUNCIONANDO`
         )
 
         bot.sendMessage(
 
             msg.chat.id,
 
-            '✅ MENSAJE ENVIADO'
+            '✅ ENVIADO'
         )
 
-    } catch (err) {
-
-        console.log(err)
+    } catch {
 
         bot.sendMessage(
 
             msg.chat.id,
 
-            '❌ ERROR EN DESTINO'
+            '❌ ERROR'
         )
     }
 })
@@ -478,7 +395,7 @@ ${texto}
             }
 
             console.log(
-'📸 FOTO ENVIADA A TELEGRAM'
+'📸 FOTO ENVIADA'
             )
 
             return
@@ -493,34 +410,6 @@ ${texto}
             texto
         }
 
-        const opciones = {
-
-            reply_markup: {
-
-                inline_keyboard: [
-
-                    [
-
-                        {
-                            text:
-                            '✅ PUBLICAR',
-
-                            callback_data:
-                            `texto_${id}`
-                        },
-
-                        {
-                            text:
-                            '❌ CANCELAR',
-
-                            callback_data:
-                            `cancelar_${id}`
-                        }
-                    ]
-                ]
-            }
-        }
-
         for (const admin of ADMINS) {
 
             await bot.sendMessage(
@@ -529,19 +418,37 @@ ${texto}
 
 `📰 NUEVA NOTICIA
 
-${texto}
+${texto}`,
 
-━━━━━━━━━━━━━━━
+                {
 
-¿PUBLICAR?`,
+                    reply_markup: {
 
-                opciones
+                        inline_keyboard: [
+
+                            [
+
+                                {
+                                    text:
+                                    '✅ PUBLICAR',
+
+                                    callback_data:
+                                    `texto_${id}`
+                                },
+
+                                {
+                                    text:
+                                    '❌ CANCELAR',
+
+                                    callback_data:
+                                    `cancelar_${id}`
+                                }
+                            ]
+                        ]
+                    }
+                }
             )
         }
-
-        console.log(
-'📨 TEXTO ENVIADO'
-        )
 
     } catch (err) {
 
@@ -563,7 +470,7 @@ async (query) => {
         query.data
 
         // ======================================
-        // SOLO TEXTO
+        // TEXTO
         // ======================================
 
         if (
@@ -662,13 +569,12 @@ async (query) => {
             const texto =
             datos.texto
 
-            // CREAR TEMP
+            // TEMP
             if (!fs.existsSync('./temp')) {
 
                 fs.mkdirSync('./temp')
             }
 
-            // RUTAS
             const imagenPath =
             `./temp/${id}.png`
 
@@ -699,16 +605,15 @@ async (query) => {
             )
 
             // TAMAÑO
-            logo.resize({
-
-                width:
-                imagen.bitmap.width * 0.55
-            })
+            logo.resize(
+                imagen.bitmap.width * 0.55,
+                Jimp.AUTO
+            )
 
             // OPACIDAD
             logo.opacity(0.30)
 
-            // POSICIÓN
+            // CENTRO
             const x =
 
                 (imagen.bitmap.width -
@@ -726,8 +631,14 @@ async (query) => {
                 y
             )
 
-            // GUARDAR
-            await imagen.write(
+            // GUARDAR FINAL
+            await imagen.writeAsync(
+                salidaPath
+            )
+
+            // MEDIA FINAL
+            const mediaFinal =
+            MessageMedia.fromFilePath(
                 salidaPath
             )
 
@@ -736,9 +647,7 @@ async (query) => {
 
                 DESTINO,
 
-                MessageMedia.fromFilePath(
-                    salidaPath
-                ),
+                mediaFinal,
 
                 {
 
