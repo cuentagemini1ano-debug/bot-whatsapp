@@ -636,10 +636,26 @@ async (query) => {
                 salidaPath
             )
 
-            // MEDIA FINAL
-            const mediaFinal =
-            MessageMedia.fromFilePath(
+            // ESPERAR
+            await new Promise(resolve =>
+                setTimeout(resolve, 2000)
+            )
+
+            // LEER IMAGEN
+            const imagenBuffer =
+            fs.readFileSync(
                 salidaPath
+            )
+
+            // CREAR MEDIA
+            const mediaFinal =
+            new MessageMedia(
+
+                'image/png',
+
+                imagenBuffer.toString(
+                    'base64'
+                )
             )
 
             // ENVIAR
@@ -652,10 +668,14 @@ async (query) => {
                 {
 
                     caption:
-`${HEADER}${texto}
+            `${HEADER}${texto}
 
-📍 Más información próximamente`
+            📍 Más información próximamente`
                 }
+            )
+
+            console.log(
+            '✅ FOTO PUBLICADA'
             )
 
             await bot.answerCallbackQuery(
