@@ -188,6 +188,18 @@ bot.onText(/\/origen (.+)/,
 
     const id = match[1]
 
+    if (
+        ORIGENES.includes(id)
+    ) {
+
+        return bot.sendMessage(
+
+            msg.chat.id,
+
+            '⚠️ YA EXISTE'
+        )
+    }
+
     ORIGENES.push(id)
 
     bot.sendMessage(
@@ -236,13 +248,13 @@ bot.onText(/\/config/,
 
 📥 ORÍGENES:
 
-${ORIGENES.join('\n')}
+${ORIGENES.join('\n') || 'NINGUNO'}
 
 ━━━━━━━━━━━━━━━
 
 📤 DESTINO:
 
-${DESTINO}`
+${DESTINO || 'NO CONFIGURADO'}`
     )
 })
 
@@ -470,7 +482,7 @@ async (query) => {
         query.data
 
         // ======================================
-        // TEXTO
+        // SOLO TEXTO
         // ======================================
 
         if (
@@ -511,7 +523,7 @@ async (query) => {
 
 `${HEADER}${datos.texto}
 
-📍 Más información próximamente`
+⚠️ Más información en proceso.`
             )
 
             await bot.answerCallbackQuery(
@@ -569,7 +581,7 @@ async (query) => {
             const texto =
             datos.texto
 
-            // TEMP
+            // CREAR TEMP
             if (!fs.existsSync('./temp')) {
 
                 fs.mkdirSync('./temp')
@@ -592,19 +604,19 @@ async (query) => {
                 )
             )
 
-            // FOTO
+            // ABRIR FOTO
             const imagen =
             await Jimp.read(
                 imagenPath
             )
 
-            // LOGO
+            // ABRIR LOGO
             const logo =
             await Jimp.read(
                 './watermark.png'
             )
 
-            // TAMAÑO
+            // REDIMENSIONAR
             logo.resize(
                 imagen.bitmap.width * 0.55,
                 Jimp.AUTO
@@ -668,14 +680,14 @@ async (query) => {
                 {
 
                     caption:
-            `${HEADER}${texto}
+`${HEADER}${texto}
 
-            📍 Más información próximamente`
+📍 Más información próximamente`
                 }
             )
 
             console.log(
-            '✅ FOTO PUBLICADA'
+'✅ FOTO PUBLICADA'
             )
 
             await bot.answerCallbackQuery(
