@@ -27,7 +27,8 @@ process.env.TOKEN || '8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
 const ADMINS = [
 
     5766404349,
-    8558292983
+    8558292983,
+    1845363088
 ]
 
 // ======================================
