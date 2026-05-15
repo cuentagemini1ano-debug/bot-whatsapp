@@ -1,8 +1,13 @@
 const qrcode = require('qrcode-terminal')
 
+const fs = require('fs')
+
+const Jimp = require('jimp')
+
 const {
     Client,
-    LocalAuth
+    LocalAuth,
+    MessageMedia
 } = require('whatsapp-web.js')
 
 const TelegramBot =
@@ -13,7 +18,7 @@ require('node-telegram-bot-api')
 // ======================================
 
 const TOKEN =
-process.env.TOKEN || '8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
+'8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
 
 // ======================================
 // ADMINS TELEGRAM
@@ -42,7 +47,7 @@ const publicaciones = {}
 // ======================================
 
 const HEADER =
-`📰 *LA EXTENSIÓN 666 NEWS.*
+`📰 *LA EXTENSIÓN 666 NEWS*
 
 `
 
@@ -52,6 +57,7 @@ const HEADER =
 
 const bot =
 new TelegramBot(TOKEN, {
+
     polling: true
 })
 
@@ -67,9 +73,6 @@ const client = new Client({
     puppeteer: {
 
         headless: true,
-
-        executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH,
 
         args: [
 
@@ -96,7 +99,7 @@ client.on('qr', (qr) => {
 // READY
 // ======================================
 
-client.on('ready', async () => {
+client.on('ready', () => {
 
     console.log('\n🟢 WHATSAPP CONECTADO')
     console.log('🚀 BOT ACTIVO\n')
@@ -152,7 +155,7 @@ Probar destino`
 })
 
 // ======================================
-// ID TELEGRAM
+// ID
 // ======================================
 
 bot.onText(/\/id/, (msg) => {
@@ -202,21 +205,11 @@ ${estado}`
 // AGREGAR ORIGEN
 // ======================================
 
-bot.onText(/\/origen (.+)/, (msg, match) => {
+bot.onText(/\/origen (.+)/,
+
+(msg, match) => {
 
     const id = match[1]
-
-    if (
-        ORIGENES.includes(id)
-    ) {
-
-        return bot.sendMessage(
-
-            msg.chat.id,
-
-            '⚠️ ESE ORIGEN YA EXISTE'
-        )
-    }
 
     ORIGENES.push(id)
 
@@ -234,7 +227,9 @@ ${id}`
 // DESTINO
 // ======================================
 
-bot.onText(/\/destino (.+)/, (msg, match) => {
+bot.onText(/\/destino (.+)/,
+
+(msg, match) => {
 
     DESTINO = match[1]
 
@@ -252,7 +247,9 @@ ${DESTINO}`
 // QUITAR ORIGEN
 // ======================================
 
-bot.onText(/\/quitarorigen (.+)/, (msg, match) => {
+bot.onText(/\/quitarorigen (.+)/,
+
+(msg, match) => {
 
     const id = match[1]
 
@@ -275,7 +272,9 @@ ${id}`
 // QUITAR DESTINO
 // ======================================
 
-bot.onText(/\/quitardestino/, (msg) => {
+bot.onText(/\/quitardestino/,
+
+(msg) => {
 
     DESTINO = ''
 
@@ -291,7 +290,9 @@ bot.onText(/\/quitardestino/, (msg) => {
 // CONFIG
 // ======================================
 
-bot.onText(/\/config/, (msg) => {
+bot.onText(/\/config/,
+
+(msg) => {
 
     bot.sendMessage(
 
@@ -312,10 +313,12 @@ ${DESTINO || 'NO CONFIGURADO'}`
 })
 
 // ======================================
-// TEST DESTINO
+// TEST
 // ======================================
 
-bot.onText(/\/test/, async (msg) => {
+bot.onText(/\/test/,
+
+async (msg) => {
 
     try {
 
@@ -352,7 +355,9 @@ SI VES ESTO FUNCIONA`
 // MENSAJES
 // ======================================
 
-client.on('message', async (msg) => {
+client.on('message_create',
+
+async (msg) => {
 
     try {
 
@@ -364,28 +369,118 @@ client.on('message', async (msg) => {
             !ORIGENES.includes(msg.from)
         ) return
 
-        // IGNORAR MEDIA
-        if (
-            msg.hasMedia
-        ) return
-
         // IGNORAR VACIOS
         if (
-            !msg.body
+            !msg.body &&
+            !msg.hasMedia
         ) return
 
         // TEXTO
         const texto =
-        msg.body.trim()
+        msg.body || ''
 
         // ID
         const id =
         Date.now()
 
-        // GUARDAR
-        mensajesPendientes[id] = texto
+        // ======================================
+        // FOTO
+        // ======================================
 
-        // BOTONES
+        if (msg.hasMedia) {
+
+            const media =
+            await msg.downloadMedia()
+
+            mensajesPendientes[id] = {
+
+                texto,
+                media
+            }
+
+            const opciones = {
+
+                reply_markup: {
+
+                    inline_keyboard: [
+
+                        [
+
+                            {
+                                text:
+                                '📝 SOLO TEXTO',
+
+                                callback_data:
+                                `texto_${id}`
+                            }
+                        ],
+
+                        [
+
+                            {
+                                text:
+                                '🖼 FOTO + TEXTO',
+
+                                callback_data:
+                                `foto_${id}`
+                            }
+                        ],
+
+                        [
+
+                            {
+                                text:
+                                '❌ CANCELAR',
+
+                                callback_data:
+                                `cancelar_${id}`
+                            }
+                        ]
+                    ]
+                }
+            }
+
+            for (const admin of ADMINS) {
+
+                await bot.sendPhoto(
+
+                    admin,
+
+                    media.data,
+
+                    {
+
+                        caption:
+`📰 NUEVA NOTICIA
+
+${texto}
+
+━━━━━━━━━━━━━━━
+
+¿QUÉ HACER?`,
+
+                        reply_markup:
+                        opciones.reply_markup
+                    }
+                )
+            }
+
+            console.log(
+'📸 FOTO ENVIADA A TELEGRAM'
+            )
+
+            return
+        }
+
+        // ======================================
+        // SOLO TEXTO
+        // ======================================
+
+        mensajesPendientes[id] = {
+
+            texto
+        }
+
         const opciones = {
 
             reply_markup: {
@@ -399,7 +494,7 @@ client.on('message', async (msg) => {
                             '✅ PUBLICAR',
 
                             callback_data:
-                            `publicar_${id}`
+                            `texto_${id}`
                         },
 
                         {
@@ -414,7 +509,6 @@ client.on('message', async (msg) => {
             }
         }
 
-        // ENVIAR A TODOS LOS ADMINS
         for (const admin of ADMINS) {
 
             await bot.sendMessage(
@@ -434,7 +528,7 @@ ${texto}
         }
 
         console.log(
-'📨 ENVIADO A TELEGRAM'
+'📨 TEXTO ENVIADO'
         )
 
     } catch (err) {
@@ -444,7 +538,7 @@ ${texto}
 })
 
 // ======================================
-// BOTONES TELEGRAM
+// BOTONES
 // ======================================
 
 bot.on('callback_query',
@@ -457,25 +551,22 @@ async (query) => {
         query.data
 
         // ======================================
-        // PUBLICAR
+        // SOLO TEXTO
         // ======================================
 
         if (
             data.startsWith(
-                'publicar_'
+                'texto_'
             )
         ) {
 
             const id =
             data.replace(
-                'publicar_',
+                'texto_',
                 ''
             )
 
-            // EVITAR DUPLICADOS
-            if (
-                publicaciones[id]
-            ) {
+            if (publicaciones[id]) {
 
                 return bot.answerCallbackQuery(
 
@@ -483,18 +574,75 @@ async (query) => {
 
                     {
                         text:
-                        '⚠️ YA FUE PUBLICADO'
+                        '⚠️ YA PUBLICADO'
                     }
                 )
             }
 
             publicaciones[id] = true
 
-            const texto =
+            const datos =
             mensajesPendientes[id]
 
-            // VALIDAR
-            if (!texto) {
+            if (!datos) {
+
+                return
+            }
+
+            await client.sendMessage(
+
+                DESTINO,
+
+`${HEADER}${datos.texto}
+
+📍 Más información próximamente`
+            )
+
+            await bot.editMessageCaption(
+
+`✅ PUBLICADO
+
+${datos.texto}`,
+
+            {
+
+                chat_id:
+                query.message.chat.id,
+
+                message_id:
+                query.message.message_id
+            })
+
+            await bot.answerCallbackQuery(
+
+                query.id,
+
+                {
+                    text:
+                    '✅ PUBLICADO'
+                }
+            )
+
+            delete mensajesPendientes[id]
+        }
+
+        // ======================================
+        // FOTO + TEXTO
+        // ======================================
+
+        if (
+            data.startsWith(
+                'foto_'
+            )
+        ) {
+
+            const id =
+            data.replace(
+                'foto_',
+                ''
+            )
+
+            if (publicaciones[id]) {
 
                 return bot.answerCallbackQuery(
 
@@ -502,42 +650,117 @@ async (query) => {
 
                     {
                         text:
-                        '❌ TEXTO NO ENCONTRADO'
+                        '⚠️ YA PUBLICADO'
                     }
                 )
             }
 
-            if (!DESTINO) {
+            publicaciones[id] = true
 
-                return bot.answerCallbackQuery(
+            const datos =
+            mensajesPendientes[id]
 
-                    query.id,
+            if (!datos) {
 
-                    {
-                        text:
-                        '❌ DESTINO VACÍO'
-                    }
-                )
+                return
             }
+
+            const media =
+            datos.media
+
+            const texto =
+            datos.texto
+
+            // CREAR TEMP
+            if (!fs.existsSync('./temp')) {
+
+                fs.mkdirSync('./temp')
+            }
+
+            // RUTAS
+            const imagenPath =
+            `./temp/${id}.png`
+
+            const salidaPath =
+            `./temp/${id}_final.png`
+
+            // GUARDAR
+            fs.writeFileSync(
+
+                imagenPath,
+
+                Buffer.from(
+                    media.data,
+                    'base64'
+                )
+            )
+
+            // ABRIR FOTO
+            const imagen =
+            await Jimp.read(
+                imagenPath
+            )
+
+            // ABRIR LOGO
+            const logo =
+            await Jimp.read(
+                './watermark.png'
+            )
+
+            // TAMAÑO
+            logo.resize({
+
+                width:
+                imagen.bitmap.width * 0.55
+            })
+
+            // OPACIDAD
+            logo.opacity(0.30)
+
+            // POSICIÓN
+            const x =
+
+                (imagen.bitmap.width -
+                logo.bitmap.width) / 2
+
+            const y =
+
+                (imagen.bitmap.height -
+                logo.bitmap.height) / 2
+
+            // PEGAR
+            imagen.composite(
+                logo,
+                x,
+                y
+            )
+
+            // GUARDAR FINAL
+            await imagen.write(
+                salidaPath
+            )
 
             // ENVIAR
             await client.sendMessage(
 
                 DESTINO,
 
+                MessageMedia.fromFilePath(
+                    salidaPath
+                ),
+
+                {
+
+                    caption:
 `${HEADER}${texto}
 
-⚠️ Más información en proceso.`
+📍 Más información próximamente`
+                }
             )
 
-            console.log(
-'✅ PUBLICADO'
-            )
+            await bot.editMessageCaption(
 
-            // EDITAR MENSAJE
-            await bot.editMessageText(
-
-`✅ PUBLICADO
+`✅ FOTO PUBLICADA
 
 ${texto}`,
 
@@ -550,18 +773,16 @@ ${texto}`,
                 query.message.message_id
             })
 
-            // ALERTA
             await bot.answerCallbackQuery(
 
                 query.id,
 
                 {
                     text:
-                    '✅ PUBLICADO'
+                    '✅ FOTO PUBLICADA'
                 }
             )
 
-            // BORRAR MEMORIA
             delete mensajesPendientes[id]
         }
 
@@ -583,7 +804,7 @@ ${texto}`,
 
             delete mensajesPendientes[id]
 
-            await bot.editMessageText(
+            await bot.editMessageCaption(
 
 '❌ CANCELADO',
 
@@ -609,7 +830,7 @@ ${texto}`,
 
     } catch (err) {
 
-        console.log('\n❌ ERROR BOTON:\n')
+        console.log('\n❌ ERROR:\n')
         console.log(err)
     }
 })
