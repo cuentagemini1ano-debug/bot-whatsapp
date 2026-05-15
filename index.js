@@ -42,7 +42,7 @@ const publicaciones = {}
 // ======================================
 
 const HEADER =
-`📰 *LA EXTENSIÓN 666 NEWS*
+`📰 *LA EXTENSIÓN 666 NEWS.*
 
 `
 
@@ -527,7 +527,7 @@ async (query) => {
 
 `${HEADER}${texto}
 
-📍 Más información próximamente`
+⚠️ Más información en proceso.`
             )
 
             console.log(
