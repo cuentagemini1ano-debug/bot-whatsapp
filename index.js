@@ -18,7 +18,7 @@ require('node-telegram-bot-api')
 // ======================================
 
 const TOKEN =
-'8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
+process.env.TOKEN || '8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
 
 // ======================================
 // ADMINS TELEGRAM
@@ -73,6 +73,9 @@ const client = new Client({
     puppeteer: {
 
         headless: true,
+
+        executablePath:
+        process.env.PUPPETEER_EXECUTABLE_PATH,
 
         args: [
 
@@ -210,6 +213,18 @@ bot.onText(/\/origen (.+)/,
 (msg, match) => {
 
     const id = match[1]
+
+    if (
+        ORIGENES.includes(id)
+    ) {
+
+        return bot.sendMessage(
+
+            msg.chat.id,
+
+            '⚠️ ESE ORIGEN YA EXISTE'
+        )
+    }
 
     ORIGENES.push(id)
 
@@ -355,7 +370,7 @@ SI VES ESTO FUNCIONA`
 // MENSAJES
 // ======================================
 
-client.on('message_create',
+client.on('message',
 
 async (msg) => {
 
@@ -398,55 +413,16 @@ async (msg) => {
                 media
             }
 
-            const opciones = {
-
-                reply_markup: {
-
-                    inline_keyboard: [
-
-                        [
-
-                            {
-                                text:
-                                '📝 SOLO TEXTO',
-
-                                callback_data:
-                                `texto_${id}`
-                            }
-                        ],
-
-                        [
-
-                            {
-                                text:
-                                '🖼 FOTO + TEXTO',
-
-                                callback_data:
-                                `foto_${id}`
-                            }
-                        ],
-
-                        [
-
-                            {
-                                text:
-                                '❌ CANCELAR',
-
-                                callback_data:
-                                `cancelar_${id}`
-                            }
-                        ]
-                    ]
-                }
-            }
-
             for (const admin of ADMINS) {
 
                 await bot.sendPhoto(
 
                     admin,
 
-                    media.data,
+                    Buffer.from(
+                        media.data,
+                        'base64'
+                    ),
 
                     {
 
@@ -459,8 +435,44 @@ ${texto}
 
 ¿QUÉ HACER?`,
 
-                        reply_markup:
-                        opciones.reply_markup
+                        reply_markup: {
+
+                            inline_keyboard: [
+
+                                [
+
+                                    {
+                                        text:
+                                        '📝 SOLO TEXTO',
+
+                                        callback_data:
+                                        `texto_${id}`
+                                    }
+                                ],
+
+                                [
+
+                                    {
+                                        text:
+                                        '🖼 FOTO + TEXTO',
+
+                                        callback_data:
+                                        `foto_${id}`
+                                    }
+                                ],
+
+                                [
+
+                                    {
+                                        text:
+                                        '❌ CANCELAR',
+
+                                        callback_data:
+                                        `cancelar_${id}`
+                                    }
+                                ]
+                            ]
+                        }
                     }
                 )
             }
@@ -584,10 +596,7 @@ async (query) => {
             const datos =
             mensajesPendientes[id]
 
-            if (!datos) {
-
-                return
-            }
+            if (!datos) return
 
             await client.sendMessage(
 
@@ -597,21 +606,6 @@ async (query) => {
 
 📍 Más información próximamente`
             )
-
-            await bot.editMessageCaption(
-
-`✅ PUBLICADO
-
-${datos.texto}`,
-
-            {
-
-                chat_id:
-                query.message.chat.id,
-
-                message_id:
-                query.message.message_id
-            })
 
             await bot.answerCallbackQuery(
 
@@ -660,10 +654,7 @@ ${datos.texto}`,
             const datos =
             mensajesPendientes[id]
 
-            if (!datos) {
-
-                return
-            }
+            if (!datos) return
 
             const media =
             datos.media
@@ -695,13 +686,13 @@ ${datos.texto}`,
                 )
             )
 
-            // ABRIR FOTO
+            // FOTO
             const imagen =
             await Jimp.read(
                 imagenPath
             )
 
-            // ABRIR LOGO
+            // LOGO
             const logo =
             await Jimp.read(
                 './watermark.png'
@@ -735,7 +726,7 @@ ${datos.texto}`,
                 y
             )
 
-            // GUARDAR FINAL
+            // GUARDAR
             await imagen.write(
                 salidaPath
             )
@@ -757,21 +748,6 @@ ${datos.texto}`,
 📍 Más información próximamente`
                 }
             )
-
-            await bot.editMessageCaption(
-
-`✅ FOTO PUBLICADA
-
-${texto}`,
-
-            {
-
-                chat_id:
-                query.message.chat.id,
-
-                message_id:
-                query.message.message_id
-            })
 
             await bot.answerCallbackQuery(
 
@@ -803,19 +779,6 @@ ${texto}`,
             )
 
             delete mensajesPendientes[id]
-
-            await bot.editMessageCaption(
-
-'❌ CANCELADO',
-
-            {
-
-                chat_id:
-                query.message.chat.id,
-
-                message_id:
-                query.message.message_id
-            })
 
             await bot.answerCallbackQuery(
 
