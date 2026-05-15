@@ -19,9 +19,11 @@ const TOKEN =
 // TU CHAT ID
 // ======================================
 
-const TU_CHAT_ID =
-5766404349
+const ADMINS = [
 
+    5766404349,
+    8558292983
+]
 // ======================================
 // VARIABLES
 // ======================================
@@ -31,6 +33,10 @@ let ORIGENES = []
 let DESTINO = ''
 
 const mensajesPendientes = {}
+if (publicaciones[id]) return
+
+publicaciones[id] = true
+const publicaciones = {}
 
 // ======================================
 // HEADER
@@ -394,7 +400,7 @@ client.on('message_create', async (msg) => {
         // ENVIAR A TELEGRAM
         await bot.sendMessage(
 
-            TU_CHAT_ID,
+            ADMINS,
 
 `📰 NUEVA NOTICIA
 
