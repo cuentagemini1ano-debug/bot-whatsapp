@@ -1,3 +1,4 @@
-2026/05/15-02:15:21.608 798c Reusing MANIFEST C:\Users\aleja\OneDrive\Desktop\bot-wwebjs\.wwebjs_auth\session\Default\shared_proto_db\metadata/MANIFEST-000001
-2026/05/15-02:15:21.608 798c Recovering log #3
-2026/05/15-02:15:21.609 798c Reusing old log C:\Users\aleja\OneDrive\Desktop\bot-wwebjs\.wwebjs_auth\session\Default\shared_proto_db\metadata/000003.log 
+2026/05/15-18:44:49.905 45b0 Creating DB C:\Users\aleja\OneDrive\Desktop\bot-wwebjs\.wwebjs_auth\session\Default\shared_proto_db\metadata since it was missing.
+2026/05/15-18:44:49.912 45b0 Reusing MANIFEST C:\Users\aleja\OneDrive\Desktop\bot-wwebjs\.wwebjs_auth\session\Default\shared_proto_db\metadata/MANIFEST-000001
+2026/05/15-18:44:49.913 45b0 Recovering log #3
+2026/05/15-18:44:49.913 45b0 Reusing old log C:\Users\aleja\OneDrive\Desktop\bot-wwebjs\.wwebjs_auth\session\Default\shared_proto_db\metadata/000003.log 
