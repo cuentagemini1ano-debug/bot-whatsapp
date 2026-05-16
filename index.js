@@ -350,8 +350,6 @@ async (msg) => {
 
     try {
 
-        await delay(15000)
-
         await client.sendMessage(
 
             DESTINO,
@@ -415,11 +413,9 @@ async (msg) => {
             !msg.hasMedia
         ) return
 
-        // TEXTO
         const texto =
         msg.body || ''
 
-        // ID
         const id =
         Date.now()
 
@@ -610,18 +606,22 @@ async (query) => {
 
             publicaciones[id] = true
 
-            setTimeout(() => {
-
-                delete publicaciones[id]
-
-            }, 600000)
-
             const datos =
             mensajesPendientes[id]
 
             if (!datos) return
 
-            await delay(15000)
+            await bot.answerCallbackQuery(
+
+                query.id,
+
+                {
+                    text:
+                    '⏳ PUBLICANDO...'
+                }
+            )
+
+            await delay(5000)
 
             await client.sendMessage(
 
@@ -632,17 +632,11 @@ async (query) => {
 ⚠️ Más información en proceso.`
             )
 
-            await bot.answerCallbackQuery(
-
-                query.id,
-
-                {
-                    text:
-                    '✅ PUBLICADO'
-                }
-            )
-
             delete mensajesPendientes[id]
+
+            console.log(
+'✅ TEXTO PUBLICADO'
+            )
         }
 
         // ======================================
@@ -676,16 +670,20 @@ async (query) => {
 
             publicaciones[id] = true
 
-            setTimeout(() => {
-
-                delete publicaciones[id]
-
-            }, 600000)
-
             const datos =
             mensajesPendientes[id]
 
             if (!datos) return
+
+            await bot.answerCallbackQuery(
+
+                query.id,
+
+                {
+                    text:
+                    '⏳ PUBLICANDO FOTO...'
+                }
+            )
 
             const media =
             datos.media
@@ -762,13 +760,13 @@ async (query) => {
 
             await delay(2000)
 
-            // MEDIA FINAL
+            // LEER FINAL
             const mediaFinal =
             MessageMedia.fromFilePath(
                 salidaPath
             )
 
-            await delay(15000)
+            await delay(5000)
 
             // ENVIAR
             await client.sendMessage(
@@ -791,18 +789,13 @@ async (query) => {
             )
 
             // BORRAR TEMP
-            fs.unlinkSync(imagenPath)
-            fs.unlinkSync(salidaPath)
+            if (fs.existsSync(imagenPath)) {
+                fs.unlinkSync(imagenPath)
+            }
 
-            await bot.answerCallbackQuery(
-
-                query.id,
-
-                {
-                    text:
-                    '✅ FOTO PUBLICADA'
-                }
-            )
+            if (fs.existsSync(salidaPath)) {
+                fs.unlinkSync(salidaPath)
+            }
 
             delete mensajesPendientes[id]
         }
@@ -840,6 +833,20 @@ async (query) => {
 
         console.log('\n❌ ERROR:\n')
         console.log(err)
+
+        try {
+
+            await bot.answerCallbackQuery(
+
+                query.id,
+
+                {
+                    text:
+                    '❌ ERROR'
+                }
+            )
+
+        } catch {}
     }
 })
 
