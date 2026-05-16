@@ -21,7 +21,7 @@ const TOKEN =
 process.env.TOKEN || '8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
 
 // ======================================
-// ADMINS TELEGRAM
+// ADMINS
 // ======================================
 
 const ADMINS = [
@@ -42,6 +42,15 @@ let DESTINO = ''
 const mensajesPendientes = {}
 
 const publicaciones = {}
+
+// ======================================
+// DELAY
+// ======================================
+
+const delay = ms =>
+new Promise(resolve =>
+setTimeout(resolve, ms)
+)
 
 // ======================================
 // HEADER
@@ -115,6 +124,9 @@ client.on('ready', () => {
 
 bot.onText(/\/start/, (msg) => {
 
+    if (!ADMINS.includes(msg.chat.id))
+    return
+
     bot.sendMessage(
 
         msg.chat.id,
@@ -127,6 +139,8 @@ COMANDOS:
 /estado
 /origen ID
 /destino ID
+/quitarorigen ID
+/quitardestino
 /config
 /test`
     )
@@ -137,6 +151,9 @@ COMANDOS:
 // ======================================
 
 bot.onText(/\/id/, (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id))
+    return
 
     bot.sendMessage(
 
@@ -153,6 +170,9 @@ ${msg.chat.id}`
 // ======================================
 
 bot.onText(/\/estado/, async (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id))
+    return
 
     try {
 
@@ -187,6 +207,9 @@ bot.onText(/\/origen (.+)/,
 
 (msg, match) => {
 
+    if (!ADMINS.includes(msg.chat.id))
+    return
+
     const id = match[1]
 
     if (
@@ -207,7 +230,7 @@ bot.onText(/\/origen (.+)/,
 
         msg.chat.id,
 
-`✅ ORIGEN:
+`✅ ORIGEN AGREGADO
 
 ${id}`
     )
@@ -221,13 +244,16 @@ bot.onText(/\/destino (.+)/,
 
 (msg, match) => {
 
+    if (!ADMINS.includes(msg.chat.id))
+    return
+
     DESTINO = match[1]
 
     bot.sendMessage(
 
         msg.chat.id,
 
-`✅ DESTINO:
+`✅ DESTINO CONFIGURADO
 
 ${DESTINO}`
     )
@@ -240,6 +266,9 @@ ${DESTINO}`
 bot.onText(/\/quitarorigen (.+)/,
 
 (msg, match) => {
+
+    if (!ADMINS.includes(msg.chat.id))
+    return
 
     const id = match[1]
 
@@ -266,6 +295,9 @@ bot.onText(/\/quitardestino/,
 
 (msg) => {
 
+    if (!ADMINS.includes(msg.chat.id))
+    return
+
     DESTINO = ''
 
     bot.sendMessage(
@@ -283,6 +315,9 @@ bot.onText(/\/quitardestino/,
 bot.onText(/\/config/,
 
 (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id))
+    return
 
     bot.sendMessage(
 
@@ -310,7 +345,12 @@ bot.onText(/\/test/,
 
 async (msg) => {
 
+    if (!ADMINS.includes(msg.chat.id))
+    return
+
     try {
+
+        await delay(15000)
 
         await client.sendMessage(
 
@@ -357,6 +397,18 @@ async (msg) => {
             !ORIGENES.includes(msg.from)
         ) return
 
+        // IGNORAR STICKERS
+        if (msg.type === 'sticker')
+        return
+
+        // IGNORAR VIDEOS
+        if (msg.type === 'video')
+        return
+
+        // IGNORAR AUDIOS
+        if (msg.type === 'audio')
+        return
+
         // IGNORAR VACIOS
         if (
             !msg.body &&
@@ -379,6 +431,8 @@ async (msg) => {
 
             const media =
             await msg.downloadMedia()
+
+            if (!media) return
 
             mensajesPendientes[id] = {
 
@@ -556,10 +610,18 @@ async (query) => {
 
             publicaciones[id] = true
 
+            setTimeout(() => {
+
+                delete publicaciones[id]
+
+            }, 600000)
+
             const datos =
             mensajesPendientes[id]
 
             if (!datos) return
+
+            await delay(15000)
 
             await client.sendMessage(
 
@@ -614,6 +676,12 @@ async (query) => {
 
             publicaciones[id] = true
 
+            setTimeout(() => {
+
+                delete publicaciones[id]
+
+            }, 600000)
+
             const datos =
             mensajesPendientes[id]
 
@@ -637,7 +705,7 @@ async (query) => {
             const salidaPath =
             `./temp/${id}_final.png`
 
-            // GUARDAR
+            // GUARDAR FOTO
             fs.writeFileSync(
 
                 imagenPath,
@@ -680,7 +748,7 @@ async (query) => {
                 (imagen.bitmap.height -
                 logo.bitmap.height) / 2
 
-            // PEGAR
+            // PEGAR LOGO
             imagen.composite(
                 logo,
                 x,
@@ -692,27 +760,15 @@ async (query) => {
                 salidaPath
             )
 
-            // ESPERAR
-            await new Promise(resolve =>
-                setTimeout(resolve, 2000)
-            )
+            await delay(2000)
 
-            // LEER IMAGEN
-            const imagenBuffer =
-            fs.readFileSync(
+            // MEDIA FINAL
+            const mediaFinal =
+            MessageMedia.fromFilePath(
                 salidaPath
             )
 
-            // CREAR MEDIA
-            const mediaFinal =
-            new MessageMedia(
-
-                'image/png',
-
-                imagenBuffer.toString(
-                    'base64'
-                )
-            )
+            await delay(15000)
 
             // ENVIAR
             await client.sendMessage(
@@ -733,6 +789,10 @@ async (query) => {
             console.log(
 '✅ FOTO PUBLICADA'
             )
+
+            // BORRAR TEMP
+            fs.unlinkSync(imagenPath)
+            fs.unlinkSync(salidaPath)
 
             await bot.answerCallbackQuery(
 
