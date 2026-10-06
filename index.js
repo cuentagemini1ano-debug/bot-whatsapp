@@ -42,7 +42,7 @@ const TelegramBot =
 // ======================================
 
 const TOKEN =
-    process.env.TOKEN || '8812023653:8812023653:AAEVwzRFG3FJEPlsks6iVS4etv2ldbjsmNQ'
+    process.env.TOKEN || '8812023653:AAEVwzRFG3FJEPlsks6iVS4etv2ldbjsmNQ'
 
 // ======================================
 // ADMINS
@@ -110,26 +110,18 @@ const bot =
 // ======================================
 
 const client = new Client({
-
-    authStrategy:
-        new LocalAuth(),
-
+    authStrategy: new LocalAuth(),
     puppeteer: {
-
         headless: true,
-
-        executablePath:
-            process.env.PUPPETEER_EXECUTABLE_PATH,
-
         args: [
-
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu'
         ]
     }
-})
+});
+
 
 // ======================================
 // QR
