@@ -148,11 +148,24 @@ client.on('qr', (qrCode) => {
 // READY
 // ======================================
 
-client.on('ready', () => {
-
+client.on('ready', async () => {
     console.log('\n🟢 WHATSAPP CONECTADO')
     console.log('🚀 BOT ACTIVO\n')
+
+    // Obtener todos los chats
+    const chats = await client.getChats();
+    // Filtrar solo los grupos
+    const groups = chats.filter(chat => chat.isGroup);
+
+    // Imprimir en consola
+    console.log('\n=== LISTA DE GRUPOS ===');
+    groups.forEach(group => {
+        console.log(`Nombre: ${group.name}`);
+        console.log(`ID: ${group.id._serialized}\n`);
+    });
+    console.log('=======================\n');
 })
+
 
 // ======================================
 // START
