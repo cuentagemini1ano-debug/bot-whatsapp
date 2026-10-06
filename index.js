@@ -171,6 +171,10 @@ client.on('ready', async () => {
 // START
 // ======================================
 
+// ======================================
+// START
+// ======================================
+
 bot.onText(/\/start/, (msg) => {
 
     if (!ADMINS.includes(msg.chat.id))
@@ -186,6 +190,7 @@ COMANDOS:
 
 /id
 /estado
+/grupos
 /origen ID
 /destino ID
 /quitarorigen ID
@@ -194,6 +199,54 @@ COMANDOS:
 /test`
     )
 })
+
+// ======================================
+// GRUPOS
+// ======================================
+
+bot.onText(/\/grupos/, async (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id))
+        return
+
+    bot.sendMessage(
+        msg.chat.id,
+        '⏳ Obteniendo lista de grupos, un momento...'
+    )
+
+    try {
+        const chats = await client.getChats()
+        const groups = chats.filter(chat => chat.isGroup)
+
+        if (groups.length === 0) {
+            return bot.sendMessage(
+                msg.chat.id,
+                '❌ No se encontraron grupos.'
+            )
+        }
+
+        let mensaje = '📋 *LISTA DE GRUPOS*\n\n'
+
+        groups.forEach(group => {
+            // El ID va entre acentos graves (`) para que Telegram permita copiarlo al tocarlo
+            mensaje += `👥 *${group.name}*\nID: \`${group.id._serialized}\`\n\n`
+        })
+
+        bot.sendMessage(
+            msg.chat.id,
+            mensaje,
+            { parse_mode: 'Markdown' }
+        )
+
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(
+            msg.chat.id,
+            '❌ Hubo un error al leer los grupos.'
+        )
+    }
+})
+
 
 // ======================================
 // ID
