@@ -1,3 +1,2 @@
-2026/10/05-21:33:17.736 43b006 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Sync Data/LevelDB/MANIFEST-000001
-2026/10/05-21:33:17.744 43b006 Recovering log #3
-2026/10/05-21:33:17.744 43b006 Reusing old log /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Sync Data/LevelDB/000003.log 
+2026/10/05-21:47:39.681 43e808 Creating DB /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Sync Data/LevelDB since it was missing.
+2026/10/05-21:47:39.688 43e808 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Sync Data/LevelDB/MANIFEST-000001
