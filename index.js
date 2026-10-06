@@ -35,14 +35,14 @@ const {
 } = require('whatsapp-web.js')
 
 const TelegramBot =
-require('node-telegram-bot-api')
+    require('node-telegram-bot-api')
 
 // ======================================
 // TOKEN TELEGRAM
 // ======================================
 
 const TOKEN =
-process.env.TOKEN || '8812023653:AAHNWwQzSk4DjjTysaPe2oWVlmhuPzKgqoU'
+    process.env.TOKEN || '8812023653:8812023653:AAEVwzRFG3FJEPlsks6iVS4etv2ldbjsmNQ'
 
 // ======================================
 // ADMINS
@@ -72,16 +72,16 @@ const publicaciones = {}
 // ======================================
 
 const delay = ms =>
-new Promise(resolve =>
-setTimeout(resolve, ms)
-)
+    new Promise(resolve =>
+        setTimeout(resolve, ms)
+    )
 
 // ======================================
 // HEADER
 // ======================================
 
 const HEADER =
-`📰 *LA EXTENSIÓN 666 NEWS*
+    `📰 *LA EXTENSIÓN 666 NEWS*
 
 `
 
@@ -90,20 +90,20 @@ const HEADER =
 // ======================================
 
 const bot =
-new TelegramBot(TOKEN, {
+    new TelegramBot(TOKEN, {
 
-    polling: {
+        polling: {
 
-        autoStart: true,
+            autoStart: true,
 
-        interval: 3000,
+            interval: 3000,
 
-        params: {
+            params: {
 
-            timeout: 10
+                timeout: 10
+            }
         }
-    }
-})
+    })
 
 // ======================================
 // WHATSAPP
@@ -112,14 +112,14 @@ new TelegramBot(TOKEN, {
 const client = new Client({
 
     authStrategy:
-    new LocalAuth(),
+        new LocalAuth(),
 
     puppeteer: {
 
         headless: true,
 
         executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH,
+            process.env.PUPPETEER_EXECUTABLE_PATH,
 
         args: [
 
@@ -168,13 +168,13 @@ client.on('ready', () => {
 bot.onText(/\/start/, (msg) => {
 
     if (!ADMINS.includes(msg.chat.id))
-    return
+        return
 
     bot.sendMessage(
 
         msg.chat.id,
 
-`🤖 PANEL BOT WHATSAPP
+        `🤖 PANEL BOT WHATSAPP
 
 COMANDOS:
 
@@ -196,13 +196,13 @@ COMANDOS:
 bot.onText(/\/id/, (msg) => {
 
     if (!ADMINS.includes(msg.chat.id))
-    return
+        return
 
     bot.sendMessage(
 
         msg.chat.id,
 
-`🆔 ID:
+        `🆔 ID:
 
 ${msg.chat.id}`
     )
@@ -215,18 +215,18 @@ ${msg.chat.id}`
 bot.onText(/\/estado/, async (msg) => {
 
     if (!ADMINS.includes(msg.chat.id))
-    return
+        return
 
     try {
 
         const estado =
-        await client.getState()
+            await client.getState()
 
         bot.sendMessage(
 
             msg.chat.id,
 
-`🟢 ESTADO:
+            `🟢 ESTADO:
 
 ${estado}`
         )
@@ -248,36 +248,36 @@ ${estado}`
 
 bot.onText(/\/origen (.+)/,
 
-(msg, match) => {
+    (msg, match) => {
 
-    if (!ADMINS.includes(msg.chat.id))
-    return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-    const id = match[1]
+        const id = match[1]
 
-    if (
-        ORIGENES.includes(id)
-    ) {
+        if (
+            ORIGENES.includes(id)
+        ) {
 
-        return bot.sendMessage(
+            return bot.sendMessage(
+
+                msg.chat.id,
+
+                '⚠️ YA EXISTE'
+            )
+        }
+
+        ORIGENES.push(id)
+
+        bot.sendMessage(
 
             msg.chat.id,
 
-            '⚠️ YA EXISTE'
-        )
-    }
-
-    ORIGENES.push(id)
-
-    bot.sendMessage(
-
-        msg.chat.id,
-
-`✅ ORIGEN AGREGADO
+            `✅ ORIGEN AGREGADO
 
 ${id}`
-    )
-})
+        )
+    })
 
 // ======================================
 // DESTINO
@@ -285,36 +285,36 @@ ${id}`
 
 bot.onText(/\/destino (.+)/,
 
-(msg, match) => {
+    (msg, match) => {
 
-    if (!ADMINS.includes(msg.chat.id))
-    return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-    const id = match[1]
+        const id = match[1]
 
-    if (
-        DESTINOS.includes(id)
-    ) {
+        if (
+            DESTINOS.includes(id)
+        ) {
 
-        return bot.sendMessage(
+            return bot.sendMessage(
+
+                msg.chat.id,
+
+                '⚠️ YA EXISTE'
+            )
+        }
+
+        DESTINOS.push(id)
+
+        bot.sendMessage(
 
             msg.chat.id,
 
-            '⚠️ YA EXISTE'
-        )
-    }
-
-    DESTINOS.push(id)
-
-    bot.sendMessage(
-
-        msg.chat.id,
-
-`✅ DESTINO AGREGADO
+            `✅ DESTINO AGREGADO
 
 ${id}`
-    )
-})
+        )
+    })
 
 // ======================================
 // QUITAR ORIGEN
@@ -322,27 +322,27 @@ ${id}`
 
 bot.onText(/\/quitarorigen (.+)/,
 
-(msg, match) => {
+    (msg, match) => {
 
-    if (!ADMINS.includes(msg.chat.id))
-    return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-    const id = match[1]
+        const id = match[1]
 
-    ORIGENES =
-    ORIGENES.filter(
-        x => x !== id
-    )
+        ORIGENES =
+            ORIGENES.filter(
+                x => x !== id
+            )
 
-    bot.sendMessage(
+        bot.sendMessage(
 
-        msg.chat.id,
+            msg.chat.id,
 
-`❌ ORIGEN ELIMINADO
+            `❌ ORIGEN ELIMINADO
 
 ${id}`
-    )
-})
+        )
+    })
 
 // ======================================
 // QUITAR DESTINO
@@ -350,27 +350,27 @@ ${id}`
 
 bot.onText(/\/quitardestino (.+)/,
 
-(msg, match) => {
+    (msg, match) => {
 
-    if (!ADMINS.includes(msg.chat.id))
-    return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-    const id = match[1]
+        const id = match[1]
 
-    DESTINOS =
-    DESTINOS.filter(
-        x => x !== id
-    )
+        DESTINOS =
+            DESTINOS.filter(
+                x => x !== id
+            )
 
-    bot.sendMessage(
+        bot.sendMessage(
 
-        msg.chat.id,
+            msg.chat.id,
 
-`❌ DESTINO ELIMINADO
+            `❌ DESTINO ELIMINADO
 
 ${id}`
-    )
-})
+        )
+    })
 
 // ======================================
 // CONFIG
@@ -378,16 +378,16 @@ ${id}`
 
 bot.onText(/\/config/,
 
-(msg) => {
+    (msg) => {
 
-    if (!ADMINS.includes(msg.chat.id))
-    return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-    bot.sendMessage(
+        bot.sendMessage(
 
-        msg.chat.id,
+            msg.chat.id,
 
-`⚙️ CONFIG
+            `⚙️ CONFIG
 
 📥 ORÍGENES:
 
@@ -398,8 +398,8 @@ ${ORIGENES.join('\n') || 'NINGUNO'}
 📤 DESTINOS:
 
 ${DESTINOS.join('\n') || 'NO CONFIGURADOS'}`
-    )
-})
+        )
+    })
 
 // ======================================
 // TEST
@@ -407,42 +407,42 @@ ${DESTINOS.join('\n') || 'NO CONFIGURADOS'}`
 
 bot.onText(/\/test/,
 
-async (msg) => {
+    async (msg) => {
 
-    if (!ADMINS.includes(msg.chat.id))
-    return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-    try {
+        try {
 
-        for (const destino of DESTINOS) {
+            for (const destino of DESTINOS) {
 
-            await client.sendMessage(
+                await client.sendMessage(
 
-                destino,
+                    destino,
 
-`🧪 TEST
+                    `🧪 TEST
 
 FUNCIONANDO`
+                )
+            }
+
+            bot.sendMessage(
+
+                msg.chat.id,
+
+                '✅ ENVIADO A TODOS'
+            )
+
+        } catch {
+
+            bot.sendMessage(
+
+                msg.chat.id,
+
+                '❌ ERROR'
             )
         }
-
-        bot.sendMessage(
-
-            msg.chat.id,
-
-            '✅ ENVIADO A TODOS'
-        )
-
-    } catch {
-
-        bot.sendMessage(
-
-            msg.chat.id,
-
-            '❌ ERROR'
-        )
-    }
-})
+    })
 
 // ======================================
 // MENSAJES
@@ -450,73 +450,141 @@ FUNCIONANDO`
 
 client.on('message',
 
-async (msg) => {
+    async (msg) => {
 
-    try {
+        try {
 
-        console.log('\n📩 NUEVO MENSAJE')
-        console.log(msg.from)
+            console.log('\n📩 NUEVO MENSAJE')
+            console.log(msg.from)
 
-        if (
-            !ORIGENES.includes(msg.from)
-        ) return
+            if (
+                !ORIGENES.includes(msg.from)
+            ) return
 
-        if (msg.type === 'sticker')
-        return
+            if (msg.type === 'sticker')
+                return
 
-        if (msg.type === 'video')
-        return
+            if (msg.type === 'video')
+                return
 
-        if (msg.type === 'audio')
-        return
+            if (msg.type === 'audio')
+                return
 
-        if (
-            !msg.body &&
-            !msg.hasMedia
-        ) return
+            if (
+                !msg.body &&
+                !msg.hasMedia
+            ) return
 
-        const texto =
-        msg.body || ''
+            const texto =
+                msg.body || ''
 
-        const id =
-        Date.now()
+            const id =
+                Date.now()
 
-        // FOTO
+            // FOTO
 
-        if (msg.hasMedia) {
+            if (msg.hasMedia) {
 
-            const media =
-            await msg.downloadMedia()
+                const media =
+                    await msg.downloadMedia()
 
-            if (!media) return
+                if (!media) return
 
-            mensajesPendientes[id] = {
+                mensajesPendientes[id] = {
 
-                texto,
-                media
-            }
+                    texto,
+                    media
+                }
 
-            for (const admin of ADMINS) {
+                for (const admin of ADMINS) {
 
-                await bot.sendPhoto(
+                    await bot.sendPhoto(
 
-                    admin,
+                        admin,
 
-                    Buffer.from(
-                        media.data,
-                        'base64'
-                    ),
+                        Buffer.from(
+                            media.data,
+                            'base64'
+                        ),
 
-                    {
+                        {
 
-                        caption:
-`📰 NUEVA NOTICIA
+                            caption:
+                                `📰 NUEVA NOTICIA
 
 ${texto}
 
 ━━━━━━━━━━━━━━━
 
 ¿QUÉ HACER?`,
+
+                            reply_markup: {
+
+                                inline_keyboard: [
+
+                                    [
+
+                                        {
+                                            text:
+                                                '📝 SOLO TEXTO',
+
+                                            callback_data:
+                                                `texto_${id}`
+                                        }
+                                    ],
+
+                                    [
+
+                                        {
+                                            text:
+                                                '🖼 FOTO + TEXTO',
+
+                                            callback_data:
+                                                `foto_${id}`
+                                        }
+                                    ],
+
+                                    [
+
+                                        {
+                                            text:
+                                                '❌ CANCELAR',
+
+                                            callback_data:
+                                                `cancelar_${id}`
+                                        }
+                                    ]
+                                ]
+                            }
+                        }
+                    )
+                }
+
+                console.log(
+                    '📸 FOTO ENVIADA'
+                )
+
+                return
+            }
+
+            // SOLO TEXTO
+
+            mensajesPendientes[id] = {
+
+                texto
+            }
+
+            for (const admin of ADMINS) {
+
+                await bot.sendMessage(
+
+                    admin,
+
+                    `📰 NUEVA NOTICIA
+
+${texto}`,
+
+                    {
 
                         reply_markup: {
 
@@ -526,32 +594,18 @@ ${texto}
 
                                     {
                                         text:
-                                        '📝 SOLO TEXTO',
+                                            '✅ PUBLICAR',
 
                                         callback_data:
-                                        `texto_${id}`
-                                    }
-                                ],
-
-                                [
+                                            `texto_${id}`
+                                    },
 
                                     {
                                         text:
-                                        '🖼 FOTO + TEXTO',
+                                            '❌ CANCELAR',
 
                                         callback_data:
-                                        `foto_${id}`
-                                    }
-                                ],
-
-                                [
-
-                                    {
-                                        text:
-                                        '❌ CANCELAR',
-
-                                        callback_data:
-                                        `cancelar_${id}`
+                                            `cancelar_${id}`
                                     }
                                 ]
                             ]
@@ -560,65 +614,11 @@ ${texto}
                 )
             }
 
-            console.log(
-'📸 FOTO ENVIADA'
-            )
+        } catch (err) {
 
-            return
+            console.log(err)
         }
-
-        // SOLO TEXTO
-
-        mensajesPendientes[id] = {
-
-            texto
-        }
-
-        for (const admin of ADMINS) {
-
-            await bot.sendMessage(
-
-                admin,
-
-`📰 NUEVA NOTICIA
-
-${texto}`,
-
-                {
-
-                    reply_markup: {
-
-                        inline_keyboard: [
-
-                            [
-
-                                {
-                                    text:
-                                    '✅ PUBLICAR',
-
-                                    callback_data:
-                                    `texto_${id}`
-                                },
-
-                                {
-                                    text:
-                                    '❌ CANCELAR',
-
-                                    callback_data:
-                                    `cancelar_${id}`
-                                }
-                            ]
-                        ]
-                    }
-                }
-            )
-        }
-
-    } catch (err) {
-
-        console.log(err)
-    }
-})
+    })
 
 // ======================================
 // BOTONES
@@ -626,275 +626,275 @@ ${texto}`,
 
 bot.on('callback_query',
 
-async (query) => {
-
-    try {
-
-        const data =
-        query.data
-
-        // SOLO TEXTO
-
-        if (
-            data.startsWith(
-                'texto_'
-            )
-        ) {
-
-            const id =
-            data.replace(
-                'texto_',
-                ''
-            )
-
-            if (publicaciones[id]) {
-
-                return bot.answerCallbackQuery(
-
-                    query.id,
-
-                    {
-                        text:
-                        '⚠️ YA PUBLICADO'
-                    }
-                )
-            }
-
-            publicaciones[id] = true
-
-            const datos =
-            mensajesPendientes[id]
-
-            if (!datos) return
-
-            await bot.answerCallbackQuery(
-
-                query.id,
-
-                {
-                    text:
-                    '⏳ PUBLICANDO...'
-                }
-            )
-
-            await delay(5000)
-
-            for (const destino of DESTINOS) {
-
-                await client.sendMessage(
-
-                    destino,
-
-`${HEADER}${datos.texto}
-
-⚠️ Más información en proceso.`
-                )
-            }
-
-            delete mensajesPendientes[id]
-
-            console.log(
-'✅ TEXTO PUBLICADO'
-            )
-        }
-
-        // FOTO + TEXTO
-
-        if (
-            data.startsWith(
-                'foto_'
-            )
-        ) {
-
-            const id =
-            data.replace(
-                'foto_',
-                ''
-            )
-
-            if (publicaciones[id]) {
-
-                return bot.answerCallbackQuery(
-
-                    query.id,
-
-                    {
-                        text:
-                        '⚠️ YA PUBLICADO'
-                    }
-                )
-            }
-
-            publicaciones[id] = true
-
-            const datos =
-            mensajesPendientes[id]
-
-            if (!datos) return
-
-            await bot.answerCallbackQuery(
-
-                query.id,
-
-                {
-                    text:
-                    '⏳ PUBLICANDO FOTO...'
-                }
-            )
-
-            const media =
-            datos.media
-
-            const texto =
-            datos.texto
-
-            if (!fs.existsSync('./temp')) {
-
-                fs.mkdirSync('./temp')
-            }
-
-            const imagenPath =
-            `./temp/${id}.png`
-
-            const salidaPath =
-            `./temp/${id}_final.png`
-
-            fs.writeFileSync(
-
-                imagenPath,
-
-                Buffer.from(
-                    media.data,
-                    'base64'
-                )
-            )
-
-            const imagen =
-            await Jimp.read(
-                imagenPath
-            )
-
-            const logo =
-            await Jimp.read(
-                './watermark.png'
-            )
-
-            logo.resize(
-                imagen.bitmap.width * 0.55,
-                Jimp.AUTO
-            )
-
-            logo.opacity(0.30)
-
-            const x =
-
-                (imagen.bitmap.width -
-                logo.bitmap.width) / 2
-
-            const y =
-
-                (imagen.bitmap.height -
-                logo.bitmap.height) / 2
-
-            imagen.composite(
-                logo,
-                x,
-                y
-            )
-
-            await imagen.writeAsync(
-                salidaPath
-            )
-
-            await delay(2000)
-
-            const mediaFinal =
-            MessageMedia.fromFilePath(
-                salidaPath
-            )
-
-            await delay(5000)
-
-            for (const destino of DESTINOS) {
-
-                await client.sendMessage(
-
-                    destino,
-
-                    mediaFinal,
-
-                    {
-
-                        caption:
-`${HEADER}${texto}
-
-📍 Más información próximamente`
-                    }
-                )
-            }
-
-            console.log(
-'✅ FOTO PUBLICADA'
-            )
-
-            if (fs.existsSync(imagenPath)) {
-                fs.unlinkSync(imagenPath)
-            }
-
-            if (fs.existsSync(salidaPath)) {
-                fs.unlinkSync(salidaPath)
-            }
-
-            delete mensajesPendientes[id]
-        }
-
-        // CANCELAR
-
-        if (
-            data.startsWith(
-                'cancelar_'
-            )
-        ) {
-
-            const id =
-            data.replace(
-                'cancelar_',
-                ''
-            )
-
-            delete mensajesPendientes[id]
-
-            await bot.answerCallbackQuery(
-
-                query.id,
-
-                {
-                    text:
-                    '❌ CANCELADO'
-                }
-            )
-        }
-
-    } catch (err) {
-
-        console.log('\n❌ ERROR:\n')
-        console.log(err)
+    async (query) => {
 
         try {
 
-            await bot.answerCallbackQuery(
+            const data =
+                query.data
 
-                query.id,
+            // SOLO TEXTO
 
-                {
-                    text:
-                    '❌ ERROR'
+            if (
+                data.startsWith(
+                    'texto_'
+                )
+            ) {
+
+                const id =
+                    data.replace(
+                        'texto_',
+                        ''
+                    )
+
+                if (publicaciones[id]) {
+
+                    return bot.answerCallbackQuery(
+
+                        query.id,
+
+                        {
+                            text:
+                                '⚠️ YA PUBLICADO'
+                        }
+                    )
                 }
-            )
 
-        } catch {}
-    }
-})
+                publicaciones[id] = true
+
+                const datos =
+                    mensajesPendientes[id]
+
+                if (!datos) return
+
+                await bot.answerCallbackQuery(
+
+                    query.id,
+
+                    {
+                        text:
+                            '⏳ PUBLICANDO...'
+                    }
+                )
+
+                await delay(5000)
+
+                for (const destino of DESTINOS) {
+
+                    await client.sendMessage(
+
+                        destino,
+
+                        `${HEADER}${datos.texto}
+
+⚠️ Más información en proceso.`
+                    )
+                }
+
+                delete mensajesPendientes[id]
+
+                console.log(
+                    '✅ TEXTO PUBLICADO'
+                )
+            }
+
+            // FOTO + TEXTO
+
+            if (
+                data.startsWith(
+                    'foto_'
+                )
+            ) {
+
+                const id =
+                    data.replace(
+                        'foto_',
+                        ''
+                    )
+
+                if (publicaciones[id]) {
+
+                    return bot.answerCallbackQuery(
+
+                        query.id,
+
+                        {
+                            text:
+                                '⚠️ YA PUBLICADO'
+                        }
+                    )
+                }
+
+                publicaciones[id] = true
+
+                const datos =
+                    mensajesPendientes[id]
+
+                if (!datos) return
+
+                await bot.answerCallbackQuery(
+
+                    query.id,
+
+                    {
+                        text:
+                            '⏳ PUBLICANDO FOTO...'
+                    }
+                )
+
+                const media =
+                    datos.media
+
+                const texto =
+                    datos.texto
+
+                if (!fs.existsSync('./temp')) {
+
+                    fs.mkdirSync('./temp')
+                }
+
+                const imagenPath =
+                    `./temp/${id}.png`
+
+                const salidaPath =
+                    `./temp/${id}_final.png`
+
+                fs.writeFileSync(
+
+                    imagenPath,
+
+                    Buffer.from(
+                        media.data,
+                        'base64'
+                    )
+                )
+
+                const imagen =
+                    await Jimp.read(
+                        imagenPath
+                    )
+
+                const logo =
+                    await Jimp.read(
+                        './watermark.png'
+                    )
+
+                logo.resize(
+                    imagen.bitmap.width * 0.55,
+                    Jimp.AUTO
+                )
+
+                logo.opacity(0.30)
+
+                const x =
+
+                    (imagen.bitmap.width -
+                        logo.bitmap.width) / 2
+
+                const y =
+
+                    (imagen.bitmap.height -
+                        logo.bitmap.height) / 2
+
+                imagen.composite(
+                    logo,
+                    x,
+                    y
+                )
+
+                await imagen.writeAsync(
+                    salidaPath
+                )
+
+                await delay(2000)
+
+                const mediaFinal =
+                    MessageMedia.fromFilePath(
+                        salidaPath
+                    )
+
+                await delay(5000)
+
+                for (const destino of DESTINOS) {
+
+                    await client.sendMessage(
+
+                        destino,
+
+                        mediaFinal,
+
+                        {
+
+                            caption:
+                                `${HEADER}${texto}
+
+📍 Más información próximamente`
+                        }
+                    )
+                }
+
+                console.log(
+                    '✅ FOTO PUBLICADA'
+                )
+
+                if (fs.existsSync(imagenPath)) {
+                    fs.unlinkSync(imagenPath)
+                }
+
+                if (fs.existsSync(salidaPath)) {
+                    fs.unlinkSync(salidaPath)
+                }
+
+                delete mensajesPendientes[id]
+            }
+
+            // CANCELAR
+
+            if (
+                data.startsWith(
+                    'cancelar_'
+                )
+            ) {
+
+                const id =
+                    data.replace(
+                        'cancelar_',
+                        ''
+                    )
+
+                delete mensajesPendientes[id]
+
+                await bot.answerCallbackQuery(
+
+                    query.id,
+
+                    {
+                        text:
+                            '❌ CANCELADO'
+                    }
+                )
+            }
+
+        } catch (err) {
+
+            console.log('\n❌ ERROR:\n')
+            console.log(err)
+
+            try {
+
+                await bot.answerCallbackQuery(
+
+                    query.id,
+
+                    {
+                        text:
+                            '❌ ERROR'
+                    }
+                )
+
+            } catch { }
+        }
+    })
 
 // ======================================
 // ERRORES
