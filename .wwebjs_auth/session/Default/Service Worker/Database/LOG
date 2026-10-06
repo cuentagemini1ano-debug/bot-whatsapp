@@ -1,2 +1,3 @@
-2026/10/05-21:47:51.487 43e808 Creating DB /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Service Worker/Database since it was missing.
-2026/10/05-21:47:51.489 43e808 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Service Worker/Database/MANIFEST-000001
+2026/10/05-22:05:20.822 442ac0 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Service Worker/Database/MANIFEST-000001
+2026/10/05-22:05:20.829 442ac0 Recovering log #3
+2026/10/05-22:05:20.830 442ac0 Reusing old log /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Service Worker/Database/000003.log 

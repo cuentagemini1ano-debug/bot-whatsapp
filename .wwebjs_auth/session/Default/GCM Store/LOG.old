@@ -1,2 +1,3 @@
-2026/10/05-21:45:24.082 43dcfd Creating DB /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/GCM Store since it was missing.
-2026/10/05-21:45:24.084 43dcfd Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/GCM Store/MANIFEST-000001
+2026/10/05-21:47:43.219 43e809 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/GCM Store/MANIFEST-000001
+2026/10/05-21:47:43.219 43e809 Recovering log #3
+2026/10/05-21:47:43.219 43e809 Reusing old log /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/GCM Store/000003.log 
