@@ -1,6 +1,3 @@
-2026/10/05-20:38:25.935 42d93e Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Local Storage/leveldb/MANIFEST-000001
-2026/10/05-20:38:25.936 42d93e Recovering log #3
-2026/10/05-20:38:25.936 42d93e Reusing old log /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Local Storage/leveldb/000003.log 
-2026/10/05-20:39:25.938 42d941 Level-0 table #5: started
-2026/10/05-20:39:25.943 42d941 Level-0 table #5: 20380 bytes OK
-2026/10/05-20:39:25.945 42d941 Delete type=0 #3
+2026/10/05-20:40:52.267 42e8d8 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Local Storage/leveldb/MANIFEST-000001
+2026/10/05-20:40:52.268 42e8d8 Recovering log #4
+2026/10/05-20:40:52.269 42e8d8 Reusing old log /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Local Storage/leveldb/000004.log 
