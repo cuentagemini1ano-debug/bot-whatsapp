@@ -1,3 +1,2 @@
-2026/10/05-22:05:21.570 442ac0 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/shared_proto_db/MANIFEST-000001
-2026/10/05-22:05:21.570 442ac0 Recovering log #3
-2026/10/05-22:05:21.570 442ac0 Reusing old log /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/shared_proto_db/000003.log 
+2026/10/05-22:10:42.962 4446e3 Creating DB /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/shared_proto_db since it was missing.
+2026/10/05-22:10:42.964 4446e3 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/shared_proto_db/MANIFEST-000001

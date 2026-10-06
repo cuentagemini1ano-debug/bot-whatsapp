@@ -1,3 +1,2 @@
-2026/10/05-22:05:22.281 442b1a Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Session Storage/MANIFEST-000001
-2026/10/05-22:05:22.281 442b1a Recovering log #3
-2026/10/05-22:05:22.282 442b1a Reusing old log /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Session Storage/000003.log 
+2026/10/05-22:10:43.152 44472a Creating DB /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Session Storage since it was missing.
+2026/10/05-22:10:43.155 44472a Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Session Storage/MANIFEST-000001

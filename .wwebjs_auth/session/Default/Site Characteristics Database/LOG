@@ -1,3 +1,2 @@
-2026/10/05-22:05:20.828 442acd Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Site Characteristics Database/MANIFEST-000001
-2026/10/05-22:05:20.829 442acd Recovering log #3
-2026/10/05-22:05:20.830 442acd Reusing old log /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Site Characteristics Database/000003.log 
+2026/10/05-22:10:42.351 4446e3 Creating DB /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Site Characteristics Database since it was missing.
+2026/10/05-22:10:42.353 4446e3 Reusing MANIFEST /Users/alejandro/Desktop/bot-wwebjs/.wwebjs_auth/session/Default/Site Characteristics Database/MANIFEST-000001
