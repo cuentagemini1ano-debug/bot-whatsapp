@@ -50,7 +50,7 @@ const TelegramBot =
 // ======================================
 
 const TOKEN =
-    process.env.TOKEN || '8812023653:AAEVwzRFG3FJEPlsks6iVS4etv2ldbjsmNQ'
+    process.env.TOKEN || '8812023653:AAHO_cngkn6-YpmtyVX-eK5qE4bQfzA6izE'
 
 // ======================================
 // ADMINS
