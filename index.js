@@ -582,7 +582,7 @@ client.on('message',
                     const prompt = `Actúa como un periodista profesional y serio de "666 NEWS". Mejora el siguiente reporte ciudadano o nota suelta. Corrige la ortografía, ponle un título llamativo en mayúsculas (puedes usar un emoji si es grave) y organiza los hechos usando viñetas si es necesario. No agregues información inventada, solo dale formato de "Boletín de Último Minuto" claro y directo. Reporte original: ${texto}`
 
                     const response = await ai.models.generateContent({
-                        model: 'gemini-1.5-flash',
+                        model: 'gemini-3.8-flash',
                         contents: prompt
                     });
 
