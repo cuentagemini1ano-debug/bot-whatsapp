@@ -172,6 +172,43 @@ client.on('ready', async () => {
 // ======================================
 
 // ======================================
+// CANALES (Comando Telegram)
+// ======================================
+
+bot.onText(/\/canales/, async (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id)) return
+
+    bot.sendMessage(msg.chat.id, '⏳ Obteniendo lista de canales, un momento...')
+
+    try {
+        await delay(5000)
+
+        const chats = await client.getChats()
+
+        // Filtramos buscando específicamente la terminación de canales (@newsletter)
+        const canales = chats.filter(chat => chat.id._serialized.includes('@newsletter'))
+
+        if (canales.length === 0) {
+            return bot.sendMessage(msg.chat.id, '❌ No se encontraron canales.')
+        }
+
+        let mensaje = '📢 *LISTA DE CANALES*\n\n'
+
+        canales.forEach(canal => {
+            mensaje += `📢 *${canal.name}*\nID: \`${canal.id._serialized}\`\n\n`
+        })
+
+        bot.sendMessage(msg.chat.id, mensaje, { parse_mode: 'Markdown' })
+
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(msg.chat.id, '❌ Hubo un error al leer los canales.')
+    }
+})
+
+
+// ======================================
 // GRUPOS (Comando Telegram)
 // ======================================
 
@@ -227,6 +264,7 @@ COMANDOS:
 /id
 /estado
 /grupos
+/canales
 /origen ID
 /destino ID
 /quitarorigen ID
