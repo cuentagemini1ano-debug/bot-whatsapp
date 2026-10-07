@@ -10,6 +10,14 @@ const express = require('express')
 
 const app = express()
 
+const { GoogleGenAI } = require('@google/genai');
+
+// Inicializamos la IA (La clave la pondremos en Railway)
+const ai = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY || 'TU_CLAVE_AQUI'
+});
+
+
 const PORT = process.env.PORT || 3000
 
 // ======================================
@@ -560,16 +568,33 @@ client.on('message',
             if (msg.type === 'audio')
                 return
 
-            if (
-                !msg.body &&
-                !msg.hasMedia
-            ) return
+            let texto = msg.body || ''
+            const id = Date.now()
 
-            const texto =
-                msg.body || ''
+            // ==========================================
+            // INTELIGENCIA ARTIFICIAL GEMINI
+            // ==========================================
+            // Solo procesa textos que tengan más de 4 letras para no gastar recursos en mensajes vacíos
+            if (texto.trim().length > 4) {
+                try {
+                    console.log('🤖 Pasando reporte por la Inteligencia Artificial...')
 
-            const id =
-                Date.now()
+                    const prompt = `Actúa como un periodista profesional y serio de "666 NEWS". Mejora el siguiente reporte ciudadano o nota suelta. Corrige la ortografía, ponle un título llamativo en mayúsculas (puedes usar un emoji si es grave) y organiza los hechos usando viñetas si es necesario. No agregues información inventada, solo dale formato de "Boletín de Último Minuto" claro y directo. Reporte original: ${texto}`
+
+                    const response = await ai.models.generateContent({
+                        model: 'gemini-2.5-flash',
+                        contents: prompt
+                    });
+
+                    texto = response.text;
+                    console.log('✅ Texto procesado por IA');
+                } catch (error) {
+                    console.log('❌ Error al procesar con la IA:', error);
+                    // Si la IA falla, usamos el texto original que mandó la persona
+                }
+            }
+            // ==========================================
+
 
             // FOTO
 
