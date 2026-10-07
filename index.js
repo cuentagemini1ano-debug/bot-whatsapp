@@ -175,22 +175,27 @@ client.on('ready', async () => {
 // CANALES (Comando Telegram)
 // ======================================
 
+// ======================================
+// CANALES (Comando Telegram)
+// ======================================
+
 bot.onText(/\/canales/, async (msg) => {
 
     if (!ADMINS.includes(msg.chat.id)) return
 
-    bot.sendMessage(msg.chat.id, '⏳ Obteniendo lista de canales, un momento...')
+    bot.sendMessage(msg.chat.id, '⏳ Buscando canales en tu cuenta...')
 
     try {
-        await delay(5000)
+        await delay(3000)
 
-        const chats = await client.getChats()
+        // 🟢 Usamos la función exclusiva para Canales en lugar de getChats()
+        const canales = await client.getChannels()
 
-        // Filtramos buscando específicamente la terminación de canales (@newsletter)
-        const canales = chats.filter(chat => chat.id._serialized.includes('@newsletter'))
-
-        if (canales.length === 0) {
-            return bot.sendMessage(msg.chat.id, '❌ No se encontraron canales.')
+        if (!canales || canales.length === 0) {
+            return bot.sendMessage(
+                msg.chat.id,
+                '❌ No se detectaron canales. Si acabas de crear uno, envía un mensaje al canal desde tu teléfono para que WhatsApp lo registre y vuelve a intentar.'
+            )
         }
 
         let mensaje = '📢 *LISTA DE CANALES*\n\n'
@@ -206,6 +211,7 @@ bot.onText(/\/canales/, async (msg) => {
         bot.sendMessage(msg.chat.id, '❌ Hubo un error al leer los canales.')
     }
 })
+
 
 
 // ======================================
