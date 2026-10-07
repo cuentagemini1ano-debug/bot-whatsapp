@@ -67,7 +67,20 @@ const ADMINS = [
 // VARIABLES Y MEMORIA
 // ======================================
 
-const CONFIG_FILE = './config.json'
+// ======================================
+// VARIABLES Y MEMORIA PERMANENTE
+// ======================================
+
+// Creamos la ruta hacia el disco duro que no se borra
+const dataDir = '/app/data';
+
+// Si la carpeta no existe, la creamos para que no marque error
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const CONFIG_FILE = `${dataDir}/config.json`;
+
 let ORIGENES = []
 let DESTINOS = []
 
