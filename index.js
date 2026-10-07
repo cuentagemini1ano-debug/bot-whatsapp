@@ -148,72 +148,79 @@ client.on('qr', (qrCode) => {
 // READY
 // ======================================
 
-try {
-    // Pausa de 5 segundos para asegurar que WhatsApp cargó todo en la nube
-    await delay(5000)
+client.on('ready', async () => {
+    console.log('\n🟢 WHATSAPP CONECTADO')
+    console.log('🚀 BOT ACTIVO\n')
 
-    const chats = await client.getChats()
-    const groups = chats.filter(chat => chat.isGroup)
+    // Obtener todos los chats
+    const chats = await client.getChats();
+    // Filtrar solo los grupos
+    const groups = chats.filter(chat => chat.isGroup);
 
-    if (groups.length === 0) {
-        return bot.sendMessage(
-            msg.chat.id,
-            '❌ No se encontraron grupos o aún están cargando.'
-        )
-    }
-
-    let mensaje = '📋 *LISTA DE GRUPOS*\n\n'
-
+    // Imprimir en consola
+    console.log('\n=== LISTA DE GRUPOS ===');
     groups.forEach(group => {
-        mensaje += `👥 *${group.name}*\nID: \`${group.id._serialized}\`\n\n`
-    })
+        console.log(`Nombre: ${group.name}`);
+        console.log(`ID: ${group.id._serialized}\n`);
+    });
+    console.log('=======================\n');
+})
+
+
+// ======================================
+// START
+// ======================================
+
+// ======================================
+// GRUPOS (Comando Telegram)
+// ======================================
+
+bot.onText(/\/grupos/, async (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id)) return
+
+    bot.sendMessage(msg.chat.id, '⏳ Obteniendo lista de grupos, un momento...')
+
+    try {
+        // Pausa de 5 segundos para asegurar que WhatsApp cargó todo
+        await delay(5000)
+
+        const chats = await client.getChats()
+        const groups = chats.filter(chat => chat.isGroup)
+
+        if (groups.length === 0) {
+            return bot.sendMessage(msg.chat.id, '❌ No se encontraron grupos.')
+        }
+
+        let mensaje = '📋 *LISTA DE GRUPOS*\n\n'
+
+        groups.forEach(group => {
+            mensaje += `👥 *${group.name}*\nID: \`${group.id._serialized}\`\n\n`
+        })
+
+        bot.sendMessage(msg.chat.id, mensaje, { parse_mode: 'Markdown' })
+
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(msg.chat.id, '❌ Hubo un error al leer los grupos.')
+    }
+})
+
+
+// ======================================
+// START
+// ======================================
+
+bot.onText(/\/start/, (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id))
+        return
 
     bot.sendMessage(
+
         msg.chat.id,
-        mensaje,
-        { parse_mode: 'Markdown' }
-    )
 
-} catch (error) {
-
-
-    client.on('ready', async () => {
-        console.log('\n🟢 WHATSAPP CONECTADO')
-        console.log('🚀 BOT ACTIVO\n')
-
-        // Obtener todos los chats
-        const chats = await client.getChats();
-        // Filtrar solo los grupos
-        const groups = chats.filter(chat => chat.isGroup);
-
-        // Imprimir en consola
-        console.log('\n=== LISTA DE GRUPOS ===');
-        groups.forEach(group => {
-            console.log(`Nombre: ${group.name}`);
-            console.log(`ID: ${group.id._serialized}\n`);
-        });
-        console.log('=======================\n');
-    })
-
-
-    // ======================================
-    // START
-    // ======================================
-
-    // ======================================
-    // START
-    // ======================================
-
-    bot.onText(/\/start/, (msg) => {
-
-        if (!ADMINS.includes(msg.chat.id))
-            return
-
-        bot.sendMessage(
-
-            msg.chat.id,
-
-            `🤖 PANEL BOT WHATSAPP
+        `🤖 PANEL BOT WHATSAPP
 
 COMANDOS:
 
@@ -226,256 +233,256 @@ COMANDOS:
 /quitardestino ID
 /config
 /test`
-        )
-    })
+    )
+})
 
-    // ======================================
-    // GRUPOS
-    // ======================================
+// ======================================
+// GRUPOS
+// ======================================
 
-    bot.onText(/\/grupos/, async (msg) => {
+bot.onText(/\/grupos/, async (msg) => {
 
-        if (!ADMINS.includes(msg.chat.id))
-            return
+    if (!ADMINS.includes(msg.chat.id))
+        return
 
-        bot.sendMessage(
-            msg.chat.id,
-            '⏳ Obteniendo lista de grupos, un momento...'
-        )
+    bot.sendMessage(
+        msg.chat.id,
+        '⏳ Obteniendo lista de grupos, un momento...'
+    )
 
-        try {
-            const chats = await client.getChats()
-            const groups = chats.filter(chat => chat.isGroup)
+    try {
+        const chats = await client.getChats()
+        const groups = chats.filter(chat => chat.isGroup)
 
-            if (groups.length === 0) {
-                return bot.sendMessage(
-                    msg.chat.id,
-                    '❌ No se encontraron grupos.'
-                )
-            }
-
-            let mensaje = '📋 *LISTA DE GRUPOS*\n\n'
-
-            groups.forEach(group => {
-                // El ID va entre acentos graves (`) para que Telegram permita copiarlo al tocarlo
-                mensaje += `👥 *${group.name}*\nID: \`${group.id._serialized}\`\n\n`
-            })
-
-            bot.sendMessage(
+        if (groups.length === 0) {
+            return bot.sendMessage(
                 msg.chat.id,
-                mensaje,
-                { parse_mode: 'Markdown' }
-            )
-
-        } catch (error) {
-            console.log(error)
-            bot.sendMessage(
-                msg.chat.id,
-                '❌ Hubo un error al leer los grupos.'
+                '❌ No se encontraron grupos.'
             )
         }
-    })
 
+        let mensaje = '📋 *LISTA DE GRUPOS*\n\n'
 
-    // ======================================
-    // ID
-    // ======================================
-
-    bot.onText(/\/id/, (msg) => {
-
-        if (!ADMINS.includes(msg.chat.id))
-            return
+        groups.forEach(group => {
+            // El ID va entre acentos graves (`) para que Telegram permita copiarlo al tocarlo
+            mensaje += `👥 *${group.name}*\nID: \`${group.id._serialized}\`\n\n`
+        })
 
         bot.sendMessage(
-
             msg.chat.id,
+            mensaje,
+            { parse_mode: 'Markdown' }
+        )
 
-            `🆔 ID:
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(
+            msg.chat.id,
+            '❌ Hubo un error al leer los grupos.'
+        )
+    }
+})
+
+
+// ======================================
+// ID
+// ======================================
+
+bot.onText(/\/id/, (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id))
+        return
+
+    bot.sendMessage(
+
+        msg.chat.id,
+
+        `🆔 ID:
 
 ${msg.chat.id}`
+    )
+})
+
+// ======================================
+// ESTADO
+// ======================================
+
+bot.onText(/\/estado/, async (msg) => {
+
+    if (!ADMINS.includes(msg.chat.id))
+        return
+
+    try {
+
+        const estado =
+            await client.getState()
+
+        bot.sendMessage(
+
+            msg.chat.id,
+
+            `🟢 ESTADO:
+
+${estado}`
         )
-    })
 
-    // ======================================
-    // ESTADO
-    // ======================================
+    } catch {
 
-    bot.onText(/\/estado/, async (msg) => {
+        bot.sendMessage(
+
+            msg.chat.id,
+
+            '🔴 DESCONECTADO'
+        )
+    }
+})
+
+// ======================================
+// ORIGEN
+// ======================================
+
+bot.onText(/\/origen (.+)/,
+
+    (msg, match) => {
 
         if (!ADMINS.includes(msg.chat.id))
             return
 
-        try {
+        const id = match[1]
 
-            const estado =
-                await client.getState()
+        if (
+            ORIGENES.includes(id)
+        ) {
 
-            bot.sendMessage(
-
-                msg.chat.id,
-
-                `🟢 ESTADO:
-
-${estado}`
-            )
-
-        } catch {
-
-            bot.sendMessage(
+            return bot.sendMessage(
 
                 msg.chat.id,
 
-                '🔴 DESCONECTADO'
+                '⚠️ YA EXISTE'
             )
         }
+
+        ORIGENES.push(id)
+
+        bot.sendMessage(
+
+            msg.chat.id,
+
+            `✅ ORIGEN AGREGADO
+
+${id}`
+        )
     })
 
-    // ======================================
-    // ORIGEN
-    // ======================================
+// ======================================
+// DESTINO
+// ======================================
 
-    bot.onText(/\/origen (.+)/,
+bot.onText(/\/destino (.+)/,
 
-        (msg, match) => {
+    (msg, match) => {
 
-            if (!ADMINS.includes(msg.chat.id))
-                return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-            const id = match[1]
+        const id = match[1]
 
-            if (
-                ORIGENES.includes(id)
-            ) {
+        if (
+            DESTINOS.includes(id)
+        ) {
 
-                return bot.sendMessage(
-
-                    msg.chat.id,
-
-                    '⚠️ YA EXISTE'
-                )
-            }
-
-            ORIGENES.push(id)
-
-            bot.sendMessage(
+            return bot.sendMessage(
 
                 msg.chat.id,
 
-                `✅ ORIGEN AGREGADO
+                '⚠️ YA EXISTE'
+            )
+        }
+
+        DESTINOS.push(id)
+
+        bot.sendMessage(
+
+            msg.chat.id,
+
+            `✅ DESTINO AGREGADO
 
 ${id}`
+        )
+    })
+
+// ======================================
+// QUITAR ORIGEN
+// ======================================
+
+bot.onText(/\/quitarorigen (.+)/,
+
+    (msg, match) => {
+
+        if (!ADMINS.includes(msg.chat.id))
+            return
+
+        const id = match[1]
+
+        ORIGENES =
+            ORIGENES.filter(
+                x => x !== id
             )
-        })
 
-    // ======================================
-    // DESTINO
-    // ======================================
+        bot.sendMessage(
 
-    bot.onText(/\/destino (.+)/,
+            msg.chat.id,
 
-        (msg, match) => {
-
-            if (!ADMINS.includes(msg.chat.id))
-                return
-
-            const id = match[1]
-
-            if (
-                DESTINOS.includes(id)
-            ) {
-
-                return bot.sendMessage(
-
-                    msg.chat.id,
-
-                    '⚠️ YA EXISTE'
-                )
-            }
-
-            DESTINOS.push(id)
-
-            bot.sendMessage(
-
-                msg.chat.id,
-
-                `✅ DESTINO AGREGADO
+            `❌ ORIGEN ELIMINADO
 
 ${id}`
+        )
+    })
+
+// ======================================
+// QUITAR DESTINO
+// ======================================
+
+bot.onText(/\/quitardestino (.+)/,
+
+    (msg, match) => {
+
+        if (!ADMINS.includes(msg.chat.id))
+            return
+
+        const id = match[1]
+
+        DESTINOS =
+            DESTINOS.filter(
+                x => x !== id
             )
-        })
 
-    // ======================================
-    // QUITAR ORIGEN
-    // ======================================
+        bot.sendMessage(
 
-    bot.onText(/\/quitarorigen (.+)/,
+            msg.chat.id,
 
-        (msg, match) => {
-
-            if (!ADMINS.includes(msg.chat.id))
-                return
-
-            const id = match[1]
-
-            ORIGENES =
-                ORIGENES.filter(
-                    x => x !== id
-                )
-
-            bot.sendMessage(
-
-                msg.chat.id,
-
-                `❌ ORIGEN ELIMINADO
+            `❌ DESTINO ELIMINADO
 
 ${id}`
-            )
-        })
+        )
+    })
 
-    // ======================================
-    // QUITAR DESTINO
-    // ======================================
+// ======================================
+// CONFIG
+// ======================================
 
-    bot.onText(/\/quitardestino (.+)/,
+bot.onText(/\/config/,
 
-        (msg, match) => {
+    (msg) => {
 
-            if (!ADMINS.includes(msg.chat.id))
-                return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-            const id = match[1]
+        bot.sendMessage(
 
-            DESTINOS =
-                DESTINOS.filter(
-                    x => x !== id
-                )
+            msg.chat.id,
 
-            bot.sendMessage(
-
-                msg.chat.id,
-
-                `❌ DESTINO ELIMINADO
-
-${id}`
-            )
-        })
-
-    // ======================================
-    // CONFIG
-    // ======================================
-
-    bot.onText(/\/config/,
-
-        (msg) => {
-
-            if (!ADMINS.includes(msg.chat.id))
-                return
-
-            bot.sendMessage(
-
-                msg.chat.id,
-
-                `⚙️ CONFIG
+            `⚙️ CONFIG
 
 📥 ORÍGENES:
 
@@ -486,193 +493,125 @@ ${ORIGENES.join('\n') || 'NINGUNO'}
 📤 DESTINOS:
 
 ${DESTINOS.join('\n') || 'NO CONFIGURADOS'}`
-            )
-        })
+        )
+    })
 
-    // ======================================
-    // TEST
-    // ======================================
+// ======================================
+// TEST
+// ======================================
 
-    bot.onText(/\/test/,
+bot.onText(/\/test/,
 
-        async (msg) => {
+    async (msg) => {
 
-            if (!ADMINS.includes(msg.chat.id))
-                return
+        if (!ADMINS.includes(msg.chat.id))
+            return
 
-            try {
+        try {
 
-                for (const destino of DESTINOS) {
+            for (const destino of DESTINOS) {
 
-                    await client.sendMessage(
+                await client.sendMessage(
 
-                        destino,
+                    destino,
 
-                        `🧪 TEST
+                    `🧪 TEST
 
 FUNCIONANDO`
-                    )
-                }
-
-                bot.sendMessage(
-
-                    msg.chat.id,
-
-                    '✅ ENVIADO A TODOS'
-                )
-
-            } catch {
-
-                bot.sendMessage(
-
-                    msg.chat.id,
-
-                    '❌ ERROR'
                 )
             }
-        })
 
-    // ======================================
-    // MENSAJES
-    // ======================================
+            bot.sendMessage(
 
-    client.on('message',
+                msg.chat.id,
 
-        async (msg) => {
+                '✅ ENVIADO A TODOS'
+            )
 
-            try {
+        } catch {
 
-                console.log('\n📩 NUEVO MENSAJE')
-                console.log(msg.from)
+            bot.sendMessage(
 
-                if (
-                    !ORIGENES.includes(msg.from)
-                ) return
+                msg.chat.id,
 
-                if (msg.type === 'sticker')
-                    return
+                '❌ ERROR'
+            )
+        }
+    })
 
-                if (msg.type === 'video')
-                    return
+// ======================================
+// MENSAJES
+// ======================================
 
-                if (msg.type === 'audio')
-                    return
+client.on('message',
 
-                if (
-                    !msg.body &&
-                    !msg.hasMedia
-                ) return
+    async (msg) => {
 
-                const texto =
-                    msg.body || ''
+        try {
 
-                const id =
-                    Date.now()
+            console.log('\n📩 NUEVO MENSAJE')
+            console.log(msg.from)
 
-                // FOTO
+            if (
+                !ORIGENES.includes(msg.from)
+            ) return
 
-                if (msg.hasMedia) {
+            if (msg.type === 'sticker')
+                return
 
-                    const media =
-                        await msg.downloadMedia()
+            if (msg.type === 'video')
+                return
 
-                    if (!media) return
+            if (msg.type === 'audio')
+                return
 
-                    mensajesPendientes[id] = {
+            if (
+                !msg.body &&
+                !msg.hasMedia
+            ) return
 
-                        texto,
-                        media
-                    }
+            const texto =
+                msg.body || ''
 
-                    for (const admin of ADMINS) {
+            const id =
+                Date.now()
 
-                        await bot.sendPhoto(
+            // FOTO
 
-                            admin,
+            if (msg.hasMedia) {
 
-                            Buffer.from(
-                                media.data,
-                                'base64'
-                            ),
+                const media =
+                    await msg.downloadMedia()
 
-                            {
+                if (!media) return
 
-                                caption:
-                                    `📰 NUEVA NOTICIA
+                mensajesPendientes[id] = {
+
+                    texto,
+                    media
+                }
+
+                for (const admin of ADMINS) {
+
+                    await bot.sendPhoto(
+
+                        admin,
+
+                        Buffer.from(
+                            media.data,
+                            'base64'
+                        ),
+
+                        {
+
+                            caption:
+                                `📰 NUEVA NOTICIA
 
 ${texto}
 
 ━━━━━━━━━━━━━━━
 
 ¿QUÉ HACER?`,
-
-                                reply_markup: {
-
-                                    inline_keyboard: [
-
-                                        [
-
-                                            {
-                                                text:
-                                                    '📝 SOLO TEXTO',
-
-                                                callback_data:
-                                                    `texto_${id}`
-                                            }
-                                        ],
-
-                                        [
-
-                                            {
-                                                text:
-                                                    '🖼 FOTO + TEXTO',
-
-                                                callback_data:
-                                                    `foto_${id}`
-                                            }
-                                        ],
-
-                                        [
-
-                                            {
-                                                text:
-                                                    '❌ CANCELAR',
-
-                                                callback_data:
-                                                    `cancelar_${id}`
-                                            }
-                                        ]
-                                    ]
-                                }
-                            }
-                        )
-                    }
-
-                    console.log(
-                        '📸 FOTO ENVIADA'
-                    )
-
-                    return
-                }
-
-                // SOLO TEXTO
-
-                mensajesPendientes[id] = {
-
-                    texto
-                }
-
-                for (const admin of ADMINS) {
-
-                    await bot.sendMessage(
-
-                        admin,
-
-                        `📰 NUEVA NOTICIA
-
-${texto}`,
-
-                        {
 
                             reply_markup: {
 
@@ -682,11 +621,25 @@ ${texto}`,
 
                                         {
                                             text:
-                                                '✅ PUBLICAR',
+                                                '📝 SOLO TEXTO',
 
                                             callback_data:
                                                 `texto_${id}`
-                                        },
+                                        }
+                                    ],
+
+                                    [
+
+                                        {
+                                            text:
+                                                '🖼 FOTO + TEXTO',
+
+                                            callback_data:
+                                                `foto_${id}`
+                                        }
+                                    ],
+
+                                    [
 
                                         {
                                             text:
@@ -702,306 +655,360 @@ ${texto}`,
                     )
                 }
 
-            } catch (err) {
+                console.log(
+                    '📸 FOTO ENVIADA'
+                )
 
-                console.log(err)
+                return
             }
-        })
 
-    // ======================================
-    // BOTONES
-    // ======================================
+            // SOLO TEXTO
 
-    bot.on('callback_query',
+            mensajesPendientes[id] = {
 
-        async (query) => {
+                texto
+            }
 
-            try {
+            for (const admin of ADMINS) {
 
-                const data =
-                    query.data
+                await bot.sendMessage(
 
-                // SOLO TEXTO
+                    admin,
 
-                if (
-                    data.startsWith(
-                        'texto_'
-                    )
-                ) {
+                    `📰 NUEVA NOTICIA
 
-                    const id =
-                        data.replace(
-                            'texto_',
-                            ''
-                        )
+${texto}`,
 
-                    if (publicaciones[id]) {
+                    {
 
-                        return bot.answerCallbackQuery(
+                        reply_markup: {
 
-                            query.id,
+                            inline_keyboard: [
 
-                            {
-                                text:
-                                    '⚠️ YA PUBLICADO'
-                            }
-                        )
+                                [
+
+                                    {
+                                        text:
+                                            '✅ PUBLICAR',
+
+                                        callback_data:
+                                            `texto_${id}`
+                                    },
+
+                                    {
+                                        text:
+                                            '❌ CANCELAR',
+
+                                        callback_data:
+                                            `cancelar_${id}`
+                                    }
+                                ]
+                            ]
+                        }
                     }
+                )
+            }
 
-                    publicaciones[id] = true
+        } catch (err) {
 
-                    const datos =
-                        mensajesPendientes[id]
+            console.log(err)
+        }
+    })
 
-                    if (!datos) return
+// ======================================
+// BOTONES
+// ======================================
 
-                    await bot.answerCallbackQuery(
+bot.on('callback_query',
+
+    async (query) => {
+
+        try {
+
+            const data =
+                query.data
+
+            // SOLO TEXTO
+
+            if (
+                data.startsWith(
+                    'texto_'
+                )
+            ) {
+
+                const id =
+                    data.replace(
+                        'texto_',
+                        ''
+                    )
+
+                if (publicaciones[id]) {
+
+                    return bot.answerCallbackQuery(
 
                         query.id,
 
                         {
                             text:
-                                '⏳ PUBLICANDO...'
+                                '⚠️ YA PUBLICADO'
                         }
-                    )
-
-                    await delay(5000)
-
-                    for (const destino of DESTINOS) {
-
-                        await client.sendMessage(
-
-                            destino,
-
-                            `${HEADER}${datos.texto}
-
-⚠️ Más información en proceso.`
-                        )
-                    }
-
-                    delete mensajesPendientes[id]
-
-                    console.log(
-                        '✅ TEXTO PUBLICADO'
                     )
                 }
 
-                // FOTO + TEXTO
+                publicaciones[id] = true
 
-                if (
-                    data.startsWith(
-                        'foto_'
-                    )
-                ) {
+                const datos =
+                    mensajesPendientes[id]
 
-                    const id =
-                        data.replace(
-                            'foto_',
-                            ''
-                        )
+                if (!datos) return
 
-                    if (publicaciones[id]) {
+                await bot.answerCallbackQuery(
 
-                        return bot.answerCallbackQuery(
+                    query.id,
 
-                            query.id,
-
-                            {
-                                text:
-                                    '⚠️ YA PUBLICADO'
-                            }
-                        )
+                    {
+                        text:
+                            '⏳ PUBLICANDO...'
                     }
+                )
 
-                    publicaciones[id] = true
+                await delay(5000)
 
-                    const datos =
-                        mensajesPendientes[id]
+                for (const destino of DESTINOS) {
 
-                    if (!datos) return
+                    await client.sendMessage(
 
-                    await bot.answerCallbackQuery(
+                        destino,
+
+                        `${HEADER}${datos.texto}
+
+⚠️ Más información en proceso.`
+                    )
+                }
+
+                delete mensajesPendientes[id]
+
+                console.log(
+                    '✅ TEXTO PUBLICADO'
+                )
+            }
+
+            // FOTO + TEXTO
+
+            if (
+                data.startsWith(
+                    'foto_'
+                )
+            ) {
+
+                const id =
+                    data.replace(
+                        'foto_',
+                        ''
+                    )
+
+                if (publicaciones[id]) {
+
+                    return bot.answerCallbackQuery(
 
                         query.id,
 
                         {
                             text:
-                                '⏳ PUBLICANDO FOTO...'
+                                '⚠️ YA PUBLICADO'
                         }
                     )
+                }
 
-                    const media =
-                        datos.media
+                publicaciones[id] = true
 
-                    const texto =
-                        datos.texto
+                const datos =
+                    mensajesPendientes[id]
 
-                    if (!fs.existsSync('./temp')) {
+                if (!datos) return
 
-                        fs.mkdirSync('./temp')
+                await bot.answerCallbackQuery(
+
+                    query.id,
+
+                    {
+                        text:
+                            '⏳ PUBLICANDO FOTO...'
                     }
+                )
 
-                    const imagenPath =
-                        `./temp/${id}.png`
+                const media =
+                    datos.media
 
-                    const salidaPath =
-                        `./temp/${id}_final.png`
+                const texto =
+                    datos.texto
 
-                    fs.writeFileSync(
+                if (!fs.existsSync('./temp')) {
 
-                        imagenPath,
+                    fs.mkdirSync('./temp')
+                }
 
-                        Buffer.from(
-                            media.data,
-                            'base64'
-                        )
+                const imagenPath =
+                    `./temp/${id}.png`
+
+                const salidaPath =
+                    `./temp/${id}_final.png`
+
+                fs.writeFileSync(
+
+                    imagenPath,
+
+                    Buffer.from(
+                        media.data,
+                        'base64'
+                    )
+                )
+
+                const imagen =
+                    await Jimp.read(
+                        imagenPath
                     )
 
-                    const imagen =
-                        await Jimp.read(
-                            imagenPath
-                        )
-
-                    const logo =
-                        await Jimp.read(
-                            './watermark.png'
-                        )
-
-                    logo.resize(
-                        imagen.bitmap.width * 0.55,
-                        Jimp.AUTO
+                const logo =
+                    await Jimp.read(
+                        './watermark.png'
                     )
 
-                    logo.opacity(0.30)
+                logo.resize(
+                    imagen.bitmap.width * 0.55,
+                    Jimp.AUTO
+                )
 
-                    const x =
+                logo.opacity(0.30)
 
-                        (imagen.bitmap.width -
-                            logo.bitmap.width) / 2
+                const x =
 
-                    const y =
+                    (imagen.bitmap.width -
+                        logo.bitmap.width) / 2
 
-                        (imagen.bitmap.height -
-                            logo.bitmap.height) / 2
+                const y =
 
-                    imagen.composite(
-                        logo,
-                        x,
-                        y
-                    )
+                    (imagen.bitmap.height -
+                        logo.bitmap.height) / 2
 
-                    await imagen.writeAsync(
+                imagen.composite(
+                    logo,
+                    x,
+                    y
+                )
+
+                await imagen.writeAsync(
+                    salidaPath
+                )
+
+                await delay(2000)
+
+                const mediaFinal =
+                    MessageMedia.fromFilePath(
                         salidaPath
                     )
 
-                    await delay(2000)
+                await delay(5000)
 
-                    const mediaFinal =
-                        MessageMedia.fromFilePath(
-                            salidaPath
-                        )
+                for (const destino of DESTINOS) {
 
-                    await delay(5000)
+                    await client.sendMessage(
 
-                    for (const destino of DESTINOS) {
+                        destino,
 
-                        await client.sendMessage(
+                        mediaFinal,
 
-                            destino,
+                        {
 
-                            mediaFinal,
-
-                            {
-
-                                caption:
-                                    `${HEADER}${texto}
+                            caption:
+                                `${HEADER}${texto}
 
 📍 Más información próximamente`
-                            }
-                        )
-                    }
-
-                    console.log(
-                        '✅ FOTO PUBLICADA'
-                    )
-
-                    if (fs.existsSync(imagenPath)) {
-                        fs.unlinkSync(imagenPath)
-                    }
-
-                    if (fs.existsSync(salidaPath)) {
-                        fs.unlinkSync(salidaPath)
-                    }
-
-                    delete mensajesPendientes[id]
-                }
-
-                // CANCELAR
-
-                if (
-                    data.startsWith(
-                        'cancelar_'
-                    )
-                ) {
-
-                    const id =
-                        data.replace(
-                            'cancelar_',
-                            ''
-                        )
-
-                    delete mensajesPendientes[id]
-
-                    await bot.answerCallbackQuery(
-
-                        query.id,
-
-                        {
-                            text:
-                                '❌ CANCELADO'
                         }
                     )
                 }
 
-            } catch (err) {
+                console.log(
+                    '✅ FOTO PUBLICADA'
+                )
 
-                console.log('\n❌ ERROR:\n')
-                console.log(err)
+                if (fs.existsSync(imagenPath)) {
+                    fs.unlinkSync(imagenPath)
+                }
 
-                try {
+                if (fs.existsSync(salidaPath)) {
+                    fs.unlinkSync(salidaPath)
+                }
 
-                    await bot.answerCallbackQuery(
-
-                        query.id,
-
-                        {
-                            text:
-                                '❌ ERROR'
-                        }
-                    )
-
-                } catch { }
+                delete mensajesPendientes[id]
             }
-        })
 
-    // ======================================
-    // ERRORES
-    // ======================================
+            // CANCELAR
 
-    process.on('unhandledRejection', err => {
+            if (
+                data.startsWith(
+                    'cancelar_'
+                )
+            ) {
 
-        console.log(err)
+                const id =
+                    data.replace(
+                        'cancelar_',
+                        ''
+                    )
+
+                delete mensajesPendientes[id]
+
+                await bot.answerCallbackQuery(
+
+                    query.id,
+
+                    {
+                        text:
+                            '❌ CANCELADO'
+                    }
+                )
+            }
+
+        } catch (err) {
+
+            console.log('\n❌ ERROR:\n')
+            console.log(err)
+
+            try {
+
+                await bot.answerCallbackQuery(
+
+                    query.id,
+
+                    {
+                        text:
+                            '❌ ERROR'
+                    }
+                )
+
+            } catch { }
+        }
     })
 
-    process.on('uncaughtException', err => {
+// ======================================
+// ERRORES
+// ======================================
 
-        console.log(err)
-    })
+process.on('unhandledRejection', err => {
 
-    // ======================================
-    // INICIAR
-    // ======================================
+    console.log(err)
+})
 
-    console.log('\n🚀 PANEL ACTIVO\n')
+process.on('uncaughtException', err => {
 
-    client.initialize()
+    console.log(err)
+})
+
+// ======================================
+// INICIAR
+// ======================================
+
+console.log('\n🚀 PANEL ACTIVO\n')
+
+client.initialize()
