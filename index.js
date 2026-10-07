@@ -56,16 +56,32 @@ const ADMINS = [
 ]
 
 // ======================================
-// VARIABLES
+// VARIABLES Y MEMORIA
 // ======================================
 
+const CONFIG_FILE = './config.json'
 let ORIGENES = []
-
 let DESTINOS = []
 
-const mensajesPendientes = {}
+// Cargar datos guardados si el archivo existe
+if (fs.existsSync(CONFIG_FILE)) {
+    const data = fs.readFileSync(CONFIG_FILE)
+    const configJSON = JSON.parse(data)
+    ORIGENES = configJSON.origenes || []
+    DESTINOS = configJSON.destinos || []
+}
 
+// Función para guardar automáticamente cada vez que agregas algo
+const guardarConfig = () => {
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify({
+        origenes: ORIGENES,
+        destinos: DESTINOS
+    }, null, 2))
+}
+
+const mensajesPendientes = {}
 const publicaciones = {}
+
 
 // ======================================
 // DELAY
@@ -385,131 +401,66 @@ ${estado}`
 // ORIGEN
 // ======================================
 
-bot.onText(/\/origen (.+)/,
+bot.onText(/\/origen (.+)/, (msg, match) => {
+    if (!ADMINS.includes(msg.chat.id)) return
+    const id = match[1]
 
-    (msg, match) => {
+    if (ORIGENES.includes(id)) {
+        return bot.sendMessage(msg.chat.id, '⚠️ YA EXISTE')
+    }
 
-        if (!ADMINS.includes(msg.chat.id))
-            return
+    ORIGENES.push(id)
+    guardarConfig() // <-- Guarda el cambio en el archivo
 
-        const id = match[1]
-
-        if (
-            ORIGENES.includes(id)
-        ) {
-
-            return bot.sendMessage(
-
-                msg.chat.id,
-
-                '⚠️ YA EXISTE'
-            )
-        }
-
-        ORIGENES.push(id)
-
-        bot.sendMessage(
-
-            msg.chat.id,
-
-            `✅ ORIGEN AGREGADO
-
-${id}`
-        )
-    })
+    bot.sendMessage(msg.chat.id, `✅ ORIGEN AGREGADO\n\n${id}`)
+})
 
 // ======================================
 // DESTINO
 // ======================================
 
-bot.onText(/\/destino (.+)/,
+bot.onText(/\/destino (.+)/, (msg, match) => {
+    if (!ADMINS.includes(msg.chat.id)) return
+    const id = match[1]
 
-    (msg, match) => {
+    if (DESTINOS.includes(id)) {
+        return bot.sendMessage(msg.chat.id, '⚠️ YA EXISTE')
+    }
 
-        if (!ADMINS.includes(msg.chat.id))
-            return
+    DESTINOS.push(id)
+    guardarConfig() // <-- Guarda el cambio en el archivo
 
-        const id = match[1]
-
-        if (
-            DESTINOS.includes(id)
-        ) {
-
-            return bot.sendMessage(
-
-                msg.chat.id,
-
-                '⚠️ YA EXISTE'
-            )
-        }
-
-        DESTINOS.push(id)
-
-        bot.sendMessage(
-
-            msg.chat.id,
-
-            `✅ DESTINO AGREGADO
-
-${id}`
-        )
-    })
+    bot.sendMessage(msg.chat.id, `✅ DESTINO AGREGADO\n\n${id}`)
+})
 
 // ======================================
 // QUITAR ORIGEN
 // ======================================
 
-bot.onText(/\/quitarorigen (.+)/,
+bot.onText(/\/quitarorigen (.+)/, (msg, match) => {
+    if (!ADMINS.includes(msg.chat.id)) return
+    const id = match[1]
 
-    (msg, match) => {
+    ORIGENES = ORIGENES.filter(x => x !== id)
+    guardarConfig() // <-- Guarda el cambio en el archivo
 
-        if (!ADMINS.includes(msg.chat.id))
-            return
-
-        const id = match[1]
-
-        ORIGENES =
-            ORIGENES.filter(
-                x => x !== id
-            )
-
-        bot.sendMessage(
-
-            msg.chat.id,
-
-            `❌ ORIGEN ELIMINADO
-
-${id}`
-        )
-    })
+    bot.sendMessage(msg.chat.id, `❌ ORIGEN ELIMINADO\n\n${id}`)
+})
 
 // ======================================
 // QUITAR DESTINO
 // ======================================
 
-bot.onText(/\/quitardestino (.+)/,
+bot.onText(/\/quitardestino (.+)/, (msg, match) => {
+    if (!ADMINS.includes(msg.chat.id)) return
+    const id = match[1]
 
-    (msg, match) => {
+    DESTINOS = DESTINOS.filter(x => x !== id)
+    guardarConfig() // <-- Guarda el cambio en el archivo
 
-        if (!ADMINS.includes(msg.chat.id))
-            return
+    bot.sendMessage(msg.chat.id, `❌ DESTINO ELIMINADO\n\n${id}`)
+})
 
-        const id = match[1]
-
-        DESTINOS =
-            DESTINOS.filter(
-                x => x !== id
-            )
-
-        bot.sendMessage(
-
-            msg.chat.id,
-
-            `❌ DESTINO ELIMINADO
-
-${id}`
-        )
-    })
 
 // ======================================
 // CONFIG
